@@ -1,5 +1,5 @@
 {
-  "name": "Knockout.Router",
+  "name": "knockout.router",
   "version": "0.1.0",
   "description": "A single page application extension for KnockoutJS",
   "repository": {
@@ -13,6 +13,9 @@
   },
   "homepage": "https://github.com/mlowen/Knockout.Router",
   "devDependencies": {
-    "grunt-contrib-coffee": "^0.13.0"
+    "grunt-contrib-coffee": "^0.13.0",
+    "grunt-contrib-concat": "^0.5.1",
+    "grunt-contrib-uglify": "^0.9.1",
+    "grunt-contrib-watch": "^0.6.1"
   }
 }
