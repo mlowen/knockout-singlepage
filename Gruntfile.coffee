@@ -7,22 +7,21 @@ module.exports = (grunt) ->
 					bare: true
 				expand: true
 				cwd: 'src'
-				dest: 'src'
+				dest: 'build'
 				src: [ '**/*.coffee' ]
 				ext: '.js'
 		concat:
 			dist:
-				src: [ 'src/ko-router-core.js' ]
-				dest: 'dist/<%= pkg.name %>.js'
+				src: [ 'build/ko-router-core.js' ]
+				dest: 'dist/<%= pkg.name %>-debug.js'
 		uglify:
 			development:
 				files:
-					'dist/<%= pkg.name %>.min.js': 'dist/<%= pkg.name %>.js'
+					'dist/<%= pkg.name %>.js': 'dist/<%= pkg.name %>-debug.js'
 		watch:
 			compile:
 				files: 'src/**/*.coffee'
-				tasks: [ 'coffee', 'concat' ]
-
+				tasks: [ 'coffee', 'concat', 'uglify' ]
 
 	grunt.loadNpmTasks 'grunt-contrib-coffee'
 	grunt.loadNpmTasks 'grunt-contrib-concat'

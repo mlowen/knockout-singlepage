@@ -1,0 +1,1 @@
+var KnockoutRouterCore;KnockoutRouterCore=function(){function a(a){this.routes=a.map(function(a){var b,c;return a.component&&ko.components.register(a.name,a.component),c="/"===a.url[0]?a.url.slice(1):a.url,b="^\\/?"+c.replace(/[-\/\\^$*+?.()|[\]{}]/g,"\\$&")+"\\/?(\\?.*)?$",{component:a.name,regex:new RegExp(b,"i")}})}return a}();

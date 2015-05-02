@@ -1,0 +1,28 @@
+{
+  "name": "Knockout.Router",
+  "version": "0.1.0",
+  "authors": [
+    "Mike Lowen <mike@mlowen.com>"
+  ],
+  "description": "A single page application extension for Knockout.",
+  "main": "dist/knockout.router.js",
+  "moduleType": [
+    "globals"
+  ],
+  "keywords": [
+    "knockout",
+    "router",
+    "mvvm",
+    "spa"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/mlowen/Knockout.Router",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "build"
+  ]
+}
