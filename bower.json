@@ -1,11 +1,11 @@
 {
-  "name": "Knockout.Router",
+  "name": "knockout-singlepage",
   "version": "0.1.0",
   "authors": [
     "Mike Lowen <mike@mlowen.com>"
   ],
   "description": "A single page application extension for Knockout.",
-  "main": "dist/knockout.router.js",
+  "main": "dist/knockout-singlepage.js",
   "moduleType": [
     "globals"
   ],
@@ -16,14 +16,18 @@
     "spa"
   ],
   "license": "MIT",
-  "homepage": "https://github.com/mlowen/Knockout.Router",
+  "homepage": "https://github.com/mlowen/knockout-singlepage",
   "ignore": [
     "**/.*",
+    "**/*.coffee",
+    "package.json",
+
     "node_modules",
     "bower_components",
     "test",
     "tests",
-    "build"
+    "build",
+    "src"
   ],
   "dependencies": {
     "knockout": "~3.3.0"

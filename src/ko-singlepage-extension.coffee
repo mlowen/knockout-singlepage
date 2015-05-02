@@ -1,5 +1,5 @@
 initialise = (ko) ->
-	class KnockoutRouterExtension
+	class KnockoutSinglePageExtension
 		constructor: () ->
 			@router = null
 			@baseUrl = location.protocol + '//' + location.host
@@ -30,4 +30,4 @@ initialise = (ko) ->
 			history.pushState null, null, url
 			@router.go url
 
-	ko.router = new KnockoutRouterExtension() unless ko.router
+	ko.router = new KnockoutSinglePageExtension() unless ko.router

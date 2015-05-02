@@ -1,11 +1,10 @@
-# Knockout.Router
+# Knockout-SinglePage
 
-A [single page application](http://en.wikipedia.org/wiki/Single-page_application)
-extension for [Knockout](http://knockoutjs.com/).
+A [single page application](http://en.wikipedia.org/wiki/Single-page_application) extension for [Knockout](http://knockoutjs.com/).
 
 ## License
 
-Knockout.Router is available under the MIT license which is as follows:
+Knockout-SinglePage is available under the MIT license which is as follows:
 
 Copyright (c) 2015 Michael Lowen
 

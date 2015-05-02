@@ -1,4 +1,4 @@
-class KnockoutRouterCore
+class KnockoutSinglePageRouter
 	constructor: (routes) ->
 		@routes = routes.map (route) ->
 			ko.components.register route.name, route.component if route.component
