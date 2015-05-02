@@ -151,5 +151,26 @@ describe 'Knockout single page router route loading', () ->
 			}
 		]).toThrow('Route has an invalid URL')
 
-	it 'throws an error when trying to add multiple routes with the same name', () -> expect(true).toBe(false)
-	it 'throws an error when trying to add multiple routes with the same URL pattern', () -> expect(true).toBe(false)
+	it 'throws an error when trying to add multiple routes with the same name', () ->
+		expect(() -> new KnockoutSinglePageRouter [
+			{
+				name: 'default'
+				url: '/'
+			}
+			{
+				name: 'default'
+				url: '/foo'
+			}
+		]).toThrow('Multiple routes added with the same name')
+
+	it 'throws an error when trying to add multiple routes with the same URL pattern', () ->
+		expect(() -> new KnockoutSinglePageRouter [
+			{
+				name: 'first'
+				url: '/'
+			}
+			{
+				name: 'second'
+				url: '/'
+			}
+		]).toThrow('Multiple routes added with the same URL')

@@ -3,6 +3,8 @@ class KnockoutSinglePageRouter
 		invalidRoute: 'Invalid route'
 		invalidRouteName: 'Route has no name'
 		invalidRouteUrl: 'Route has an invalid URL'
+		routesWithDuplicateName: 'Multiple routes added with the same name'
+		routesWithDuplicateUrl: 'Multiple routes added with the same URL'
 
 	constructor: (routes) ->
 		@routes = routes.map (route) =>
