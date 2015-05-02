@@ -47,11 +47,11 @@ describe 'Knockout single page router route loading', () ->
 	it 'loads multiple routes', () ->
 		router = new KnockoutSinglePageRouter [
 			{
-				name: 'default'
+				name: 'first'
 				url: '/'
 			}
 			{
-				name: 'default'
+				name: 'second'
 				url: '/foo'
 			}
 		]
