@@ -1,3 +1,7 @@
 node_modules
 bower_components
 build
+.grunt
+
+tests/**/*.js
+_SpecRunner.html

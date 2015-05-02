@@ -10,6 +10,22 @@ module.exports = (grunt) ->
 				dest: 'build'
 				src: [ '**/*.coffee' ]
 				ext: '.js'
+			tests:
+				options:
+					bare: true
+				expand: true
+				cwd: 'tests'
+				dest: 'tests'
+				src: [ '**/*.coffee' ]
+				ext: '.js'
+		jasmine:
+			tests:
+				src: 'build/**/*.js'
+				options:
+					specs: 'tests/**/*.js'
+					vendor: [
+						'bower_components/knockout/dist/knockout.js'
+					]
 		concat:
 			dist:
 				src: [
@@ -25,8 +41,8 @@ module.exports = (grunt) ->
 					'dist/<%= pkg.name %>.js': 'dist/<%= pkg.name %>-debug.js'
 		watch:
 			compile:
-				files: 'src/**/*.coffee'
-				tasks: [ 'coffee', 'concat', 'uglify' ]
+				files: '**/*.coffee'
+				tasks: [ 'default' ]
 
 	grunt.loadNpmTasks 'grunt-contrib-coffee'
 	grunt.loadNpmTasks 'grunt-contrib-concat'
@@ -34,4 +50,5 @@ module.exports = (grunt) ->
 	grunt.loadNpmTasks 'grunt-contrib-watch'
 	grunt.loadNpmTasks 'grunt-contrib-jasmine'
 
-	grunt.registerTask 'default', [ 'coffee', 'concat', 'uglify' ]
+	grunt.registerTask 'default', [ 'coffee', 'jasmine', 'concat', 'uglify' ]
+	grunt.registerTask 'test', [ 'coffee', 'jasmine' ]
