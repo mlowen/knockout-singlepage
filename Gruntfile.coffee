@@ -12,10 +12,15 @@ module.exports = (grunt) ->
 				ext: '.js'
 		concat:
 			dist:
-				src: [ 'build/ko-router-core.js' ]
+				src: [
+					'src/fragments/prefix.js'
+					'build/ko-router-core.js'
+					'build/ko-router-extension.js'
+					'src/fragments/suffix.js'
+				]
 				dest: 'dist/<%= pkg.name %>-debug.js'
 		uglify:
-			development:
+			dist:
 				files:
 					'dist/<%= pkg.name %>.js': 'dist/<%= pkg.name %>-debug.js'
 		watch:
@@ -27,5 +32,6 @@ module.exports = (grunt) ->
 	grunt.loadNpmTasks 'grunt-contrib-concat'
 	grunt.loadNpmTasks 'grunt-contrib-uglify'
 	grunt.loadNpmTasks 'grunt-contrib-watch'
+	grunt.loadNpmTasks 'grunt-contrib-jasmine'
 
 	grunt.registerTask 'default', [ 'coffee', 'concat', 'uglify' ]
