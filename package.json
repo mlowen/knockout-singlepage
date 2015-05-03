@@ -11,8 +11,12 @@
   "bugs": {
     "url": "https://github.com/mlowen/knockout-singlepage/issues"
   },
+  "scripts": {
+    "test": "grunt test"
+  },
   "homepage": "https://github.com/mlowen/knockout-singlepage",
   "devDependencies": {
+    "grunt": "^0.4.5",
     "grunt-contrib-coffee": "^0.13.0",
     "grunt-contrib-concat": "^0.5.1",
     "grunt-contrib-jasmine": "^0.8.2",
