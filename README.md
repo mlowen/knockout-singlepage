@@ -1,12 +1,14 @@
 # Knockout-SinglePage
 
+[![Build Status](https://travis-ci.org/mlowen/knockout-singlepage.svg?branch=master)](https://travis-ci.org/mlowen/knockout-singlepage)
+
 A [single page application](http://en.wikipedia.org/wiki/Single-page_application) extension for [Knockout](http://knockoutjs.com/).
 
 ## License
 
 Knockout-SinglePage is available under the MIT license which is as follows:
 
-Copyright (c) 2015 Michael Lowen
+Copyright &copy; 2015 Michael Lowen
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
