@@ -4,7 +4,7 @@ initialise = (ko) ->
 			@router = null
 			@baseUrl = location.protocol + '//' + location.host
 
-		init: (element, routes) ->
+		init: (routes, element) ->
 			throw 'Router has already been initialised' if @router
 
 			@router = new Router routes
@@ -14,11 +14,10 @@ initialise = (ko) ->
 			element.setAttribute 'data-bind', 'component: current'
 
 			document.body.addEventListener 'click', (e) =>
-				e.stopPropagation()
-
 				if e.target.tagName.toLowerCase() == 'a' && e.target.href[... @baseUrl.length] is @baseUrl
 					@go e.target.href[@baseUrl.length ...]
 
+					e.stopPropagation()
 					e.preventDefault()
 			, false
 
@@ -30,4 +29,4 @@ initialise = (ko) ->
 			history.pushState null, null, url
 			@router.go url
 
-	ko.router = new KnockoutSinglePageExtension() unless ko.router
+	ko.singlePage = new KnockoutSinglePageExtension() unless ko.singlePage

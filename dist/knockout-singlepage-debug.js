@@ -74,7 +74,7 @@ initialise = function(ko) {
       this.baseUrl = location.protocol + '//' + location.host;
     }
 
-    KnockoutSinglePageExtension.prototype.init = function(element, routes) {
+    KnockoutSinglePageExtension.prototype.init = function(routes, element) {
       if (this.router) {
         throw 'Router has already been initialised';
       }
@@ -86,9 +86,9 @@ initialise = function(ko) {
       element.setAttribute('data-bind', 'component: current');
       document.body.addEventListener('click', (function(_this) {
         return function(e) {
-          e.stopPropagation();
           if (e.target.tagName.toLowerCase() === 'a' && e.target.href.slice(0, _this.baseUrl.length) === _this.baseUrl) {
             _this.go(e.target.href.slice(_this.baseUrl.length));
+            e.stopPropagation();
             return e.preventDefault();
           }
         };
@@ -107,8 +107,8 @@ initialise = function(ko) {
     return KnockoutSinglePageExtension;
 
   })();
-  if (!ko.router) {
-    return ko.router = new KnockoutSinglePageExtension();
+  if (!ko.singlePage) {
+    return ko.singlePage = new KnockoutSinglePageExtension();
   }
 };
 
