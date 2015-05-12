@@ -85,10 +85,29 @@ describe 'Knockout single page router route matching', () ->
 
 	## Single parameter
 
-	it 'matches a route with a parameter', () -> expect(true).toBe(false)
-	it 'matches a route with a parameter and a query string', () -> expect(true).toBe(false)
-	it 'matches a route with a parameter and a hash', () -> expect(true).toBe(false)
-	it 'matches a route with a parameter and a hash and a query string', () -> expect(true).toBe(false)
+	it 'matches a route with a parameter', () ->
+		router.go '/foo/123'
+
+		expect(router.current().component).toBe('parameter')
+		expect(router.current().parameters.id).toBe('123')
+
+	it 'matches a route with a parameter and a query string', () ->
+		router.go '/foo/123?foo=bar'
+
+		expect(router.current().component).toBe('parameter')
+		expect(router.current().parameters.id).toBe('123')
+
+	it 'matches a route with a parameter and a hash', () ->
+		router.go '/foo/123#hash'
+
+		expect(router.current().component).toBe('parameter')
+		expect(router.current().parameters.id).toBe('123')
+
+	it 'matches a route with a parameter and a hash and a query string', () ->
+		router.go '/foo/123#hash?foo=bar'
+
+		expect(router.current().component).toBe('parameter')
+		expect(router.current().parameters.id).toBe('123')
 
 	## Multiple parameters
 

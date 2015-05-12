@@ -42,7 +42,16 @@ class KnockoutSinglePageRouter
 		route = (@routes.filter (r) -> r.regex.test url)[0]
 
 		if route
+			params = {}
+
+			if route.parameters.length
+				matches = url.match(route.regex)[1..]
+
+				for index in [0..route.parameters.length - 1]
+					params[route.parameters[index]] = matches[index]
+
 			@current
 				component: route.component
+				parameters: params
 		else
 			@current null
