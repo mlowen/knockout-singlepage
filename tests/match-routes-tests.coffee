@@ -54,3 +54,5 @@ describe 'Knockout single page router route matching', () ->
 	it 'matches a route with multiple parameters', () -> expect(true).toBe(false)
 	it 'matches a route with multiple parameters and a query string', () -> expect(true).toBe(false)
 	it 'matches a route with multiple parameters and a hash', () -> expect(true).toBe(false)
+
+	it 'sets current to null if unable to match a route', () -> expect(true).toBe(false)
