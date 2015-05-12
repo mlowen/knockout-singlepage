@@ -43,6 +43,7 @@ class KnockoutSinglePageRouter
 
 		if route
 			params = {}
+			query = {}
 			hash = null
 
 			if route.parameters.length
@@ -52,11 +53,27 @@ class KnockoutSinglePageRouter
 					params[route.parameters[index]] = matches[index]
 
 			hashStart = url.indexOf('#') + 1
+			queryStart = url.indexOf('?') + 1
+
 			hash = url[hashStart ..] if hashStart > 0
+
+			if queryStart > 0
+				queryStringParameters = url[queryStart ..].split '&'
+
+				for parameter in queryStringParameters
+					equalPosition = parameter.indexOf '='
+
+					if equalPosition > 0
+						[name, value] = parameter.split '='
+
+						query[name] = value
+					else
+						query[name] = null
 
 			@current
 				component: route.component
 				parameters: params
 				hash: hash
+				query: query
 		else
 			@current null
