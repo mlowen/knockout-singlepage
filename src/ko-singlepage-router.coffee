@@ -7,6 +7,7 @@ class KnockoutSinglePageRouter
 		routesWithDuplicateUrl: 'Multiple routes added with the same URL'
 
 	constructor: (routes) ->
+		@current = ko.observable null
 		@routes = []
 
 		for r in routes
@@ -35,3 +36,6 @@ class KnockoutSinglePageRouter
 				throw @errorMessages.routesWithDuplicateUrl if existing.regex.toString() == route.regex.toString()
 
 			@routes.push route
+
+	go: (url) ->
+		@current (@routes.filter (r) -> r.regex.test url)[0]

@@ -13,6 +13,7 @@ KnockoutSinglePageRouter = (function() {
 
   function KnockoutSinglePageRouter(routes) {
     var existing, i, j, len, len1, name, paramRegex, parameters, r, ref, regex, route, url;
+    this.current = ko.observable(null);
     this.routes = [];
     for (i = 0, len = routes.length; i < len; i++) {
       r = routes[i];
@@ -59,6 +60,12 @@ KnockoutSinglePageRouter = (function() {
       this.routes.push(route);
     }
   }
+
+  KnockoutSinglePageRouter.prototype.go = function(url) {
+    return this.current((this.routes.filter(function(r) {
+      return r.regex.test(url);
+    }))[0]);
+  };
 
   return KnockoutSinglePageRouter;
 
