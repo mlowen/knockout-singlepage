@@ -146,7 +146,7 @@ initialise = function(ko) {
       if (!element) {
         element = document.body;
       }
-      element.setAttribute('data-bind', 'component: current');
+      element.setAttribute('data-bind', 'component: { name: current().compoent, params: { params: current().parameters, hash: current().hash, query: current().query } }');
       document.body.addEventListener('click', (function(_this) {
         return function(e) {
           if (e.target.tagName.toLowerCase() === 'a' && e.target.href.slice(0, _this.baseUrl.length) === _this.baseUrl) {

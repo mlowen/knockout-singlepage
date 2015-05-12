@@ -11,7 +11,7 @@ initialise = (ko) ->
 			@router.go location.pathname
 
 			element = document.body unless element
-			element.setAttribute 'data-bind', 'component: current'
+			element.setAttribute 'data-bind', 'component: { name: current().compoent, params: { params: current().parameters, hash: current().hash, query: current().query } }'
 
 			document.body.addEventListener 'click', (e) =>
 				if e.target.tagName.toLowerCase() == 'a' && e.target.href[... @baseUrl.length] is @baseUrl
