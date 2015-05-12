@@ -55,7 +55,9 @@ class KnockoutSinglePageRouter
 			hashStart = url.indexOf('#') + 1
 			queryStart = url.indexOf('?') + 1
 
-			hash = url[hashStart ..] if hashStart > 0
+			if hashStart > 0
+				hash = url[hashStart ..] if queryStart < 1
+				hash = url[hashStart .. (queryStart - 2)] if queryStart > hashStart
 
 			if queryStart > 0
 				queryStringParameters = url[queryStart ..].split '&'
@@ -68,7 +70,7 @@ class KnockoutSinglePageRouter
 
 						query[name] = value
 					else
-						query[name] = null
+						query[parameter] = null
 
 			@current
 				component: route.component

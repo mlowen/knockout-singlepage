@@ -164,7 +164,23 @@ describe 'Knockout single page router route matching', () ->
 
 		expect(router.current().query.foo).toBe('123')
 
-	it 'extracts a query parameter into the query object of the current route when there is also a hash', () -> expect(true).toBe(false)
+	it 'extracts a query parameter into the query object of the current route and sets it to null if there is no value', () ->
+		router.go '/?foo'
+
+		expect(router.current().query.foo).toBe(null)
+
+	it 'extracts a query parameter into the query object of the current route when there is also a hash', () ->
+		router.go '/#hash?foo=123'
+
+		expect(router.current().hash).toBe('hash')
+		expect(router.current().query.foo).toBe('123')
+
+	it 'extracts a query parameter into the query object of the current route when the parameter contains a hash', () ->
+		router.go '/?foo=123#abc'
+
+		expect(router.current().hash).toBe(null)
+		expect(router.current().query.foo).toBe('123#abc')
+
 	it 'extracts multiple query parameters into the query object of the current route', () -> expect(true).toBe(false)
 	it 'extracts multiple query parameters of the same name into an array on the query object of the current route', () -> expect(true).toBe(false)
 	it 'extracts multiple query parameters with a mix of distinct and multiple of the same name into the query object of the current route', () -> expect(true).toBe(false)
