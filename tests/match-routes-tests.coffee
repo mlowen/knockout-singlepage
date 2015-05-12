@@ -111,10 +111,33 @@ describe 'Knockout single page router route matching', () ->
 
 	## Multiple parameters
 
-	it 'matches a route with multiple parameters', () -> expect(true).toBe(false)
-	it 'matches a route with multiple parameters and a query string', () -> expect(true).toBe(false)
-	it 'matches a route with multiple parameters and a hash', () -> expect(true).toBe(false)
-	it 'matches a route with a parameter and a hash and a query string', () -> expect(true).toBe(false)
+	it 'matches a route with multiple parameters', () ->
+		router.go '/foo/123/bar/abc'
+
+		expect(router.current().component).toBe('multiparameters')
+		expect(router.current().parameters.foo).toBe('123')
+		expect(router.current().parameters.bar).toBe('abc')
+
+	it 'matches a route with multiple parameters and a query string', () ->
+		router.go '/foo/123/bar/abc?foo=bar'
+
+		expect(router.current().component).toBe('multiparameters')
+		expect(router.current().parameters.foo).toBe('123')
+		expect(router.current().parameters.bar).toBe('abc')
+
+	it 'matches a route with multiple parameters and a hash', () ->
+		router.go '/foo/123/bar/abc#hash'
+
+		expect(router.current().component).toBe('multiparameters')
+		expect(router.current().parameters.foo).toBe('123')
+		expect(router.current().parameters.bar).toBe('abc')
+
+	it 'matches a route with a parameter and a hash and a query string', () ->
+		router.go '/foo/123/bar/abc#hash?foo=bar'
+
+		expect(router.current().component).toBe('multiparameters')
+		expect(router.current().parameters.foo).toBe('123')
+		expect(router.current().parameters.bar).toBe('abc')
 
 	## Unknown route
 
