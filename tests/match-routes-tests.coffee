@@ -181,6 +181,27 @@ describe 'Knockout single page router route matching', () ->
 		expect(router.current().hash).toBe(null)
 		expect(router.current().query.foo).toBe('123#abc')
 
-	it 'extracts multiple query parameters into the query object of the current route', () -> expect(true).toBe(false)
-	it 'extracts multiple query parameters of the same name into an array on the query object of the current route', () -> expect(true).toBe(false)
-	it 'extracts multiple query parameters with a mix of distinct and multiple of the same name into the query object of the current route', () -> expect(true).toBe(false)
+	it 'extracts multiple query parameters into the query object of the current route', () ->
+		router.go '/?foo=123&bar=abc'
+
+		expect(router.current().query.foo).toBe('123')
+		expect(router.current().query.bar).toBe('abc')
+
+	it 'extracts multiple query parameters of the same name into an array on the query object of the current route', () ->
+		router.go '/?foo=123&foo=abc'
+
+		expect(router.current().query.foo.length).toBe(2)
+		expect('123' in router.current().query.foo).toBe(true)
+		expect('abc' in router.current().query.foo).toBe(true)
+
+	it 'overwrites a query parameter when specified twice times but at least once without a value', () ->
+		router.go '/?foo=123&foo'
+
+		expect(router.current().query.foo).toBe('123')
+
+	it 'does not add query parameter to array if it has been specified multiple times and at least once without a value.', () ->
+		router.go '/?foo=123&foo=abc&foo'
+
+		expect(router.current().query.foo.length).toBe(2)
+		expect('123' in router.current().query.foo).toBe(true)
+		expect('abc' in router.current().query.foo).toBe(true)

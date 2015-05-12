@@ -64,13 +64,22 @@ class KnockoutSinglePageRouter
 
 				for parameter in queryStringParameters
 					equalPosition = parameter.indexOf '='
+					name = null
+					value = null
 
 					if equalPosition > 0
 						[name, value] = parameter.split '='
-
-						query[name] = value
 					else
-						query[parameter] = null
+						name = parameter
+
+					if query[name]
+						if value
+							if 'array' == typeof query[name]
+								query[name].push value
+							else
+								query[name] = [query[name], value]
+					else
+						query[name] = value
 
 			@current
 				component: route.component
