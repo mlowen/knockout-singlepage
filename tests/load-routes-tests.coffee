@@ -68,6 +68,7 @@ describe 'Knockout single page router route loading', () ->
 
 		route = router.routes[0]
 
+		expect(route.regex.toString()).toBe((/^\/foo\/([a-z0-9]+)\/?(#.*)?(\?.*)?$/i).toString())
 		expect(route.parameters.length).toBe(1)
 		expect('id' in route.parameters).toBe(true)
 
@@ -75,12 +76,15 @@ describe 'Knockout single page router route loading', () ->
 		router = new KnockoutSinglePageRouter [
 			{
 				name: 'default'
-				url: '/foo/:id/:bar'
+				url: '/foo/:id/bar/:bar'
 			}
 		]
 
 		route = router.routes[0]
 
+		console.log route.regex
+
+		expect(route.regex.toString()).toBe((/^\/foo\/([a-z0-9]+)\/bar\/([a-z0-9]+)\/?(#.*)?(\?.*)?$/i).toString())
 		expect(route.parameters.length).toBe(2)
 		expect('id' in route.parameters).toBe(true)
 		expect('bar' in route.parameters).toBe(true)
