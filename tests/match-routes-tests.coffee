@@ -29,6 +29,8 @@ describe 'Knockout single page router route matching', () ->
 
 	# Route Matching
 
+	## Default
+
 	it 'matches the default route', () ->
 		router.go '/'
 		expect(router.current().component).toBe('default')
@@ -44,6 +46,8 @@ describe 'Knockout single page router route matching', () ->
 	it 'matches the default route with a hash and a query string', () ->
 		router.go '/#hash?foo=bar'
 		expect(router.current().component).toBe('default')
+
+	## Single component
 
 	it 'matches a single component route', () ->
 		router.go '/foo'
@@ -61,17 +65,39 @@ describe 'Knockout single page router route matching', () ->
 		router.go '/foo#hash?foo=bar'
 		expect(router.current().component).toBe('single')
 
-	it 'matches a multi component route', () -> expect(true).toBe(false)
-	it 'matches a multi component route with a query string', () -> expect(true).toBe(false)
-	it 'matches a multi component matches the default route with a hash', () -> expect(true).toBe(false)
+	## Multiple components
+
+	it 'matches a multi component route', () ->
+		router.go '/foo/bar'
+		expect(router.current().component).toBe('multi')
+
+	it 'matches a multi component route with a query string', () ->
+		router.go '/foo/bar?foo=bar'
+		expect(router.current().component).toBe('multi')
+
+	it 'matches a multi component matches the default route with a hash', () ->
+		router.go '/foo/bar#hash'
+		expect(router.current().component).toBe('multi')
+
+	it 'matches a multi component matches the default route with a hash and a query string', () ->
+		router.go '/foo/bar#hash?foo=bar'
+		expect(router.current().component).toBe('multi')
+
+	## Single parameter
 
 	it 'matches a route with a parameter', () -> expect(true).toBe(false)
 	it 'matches a route with a parameter and a query string', () -> expect(true).toBe(false)
 	it 'matches a route with a parameter and a hash', () -> expect(true).toBe(false)
+	it 'matches a route with a parameter and a hash and a query string', () -> expect(true).toBe(false)
+
+	## Multiple parameters
 
 	it 'matches a route with multiple parameters', () -> expect(true).toBe(false)
 	it 'matches a route with multiple parameters and a query string', () -> expect(true).toBe(false)
 	it 'matches a route with multiple parameters and a hash', () -> expect(true).toBe(false)
+	it 'matches a route with a parameter and a hash and a query string', () -> expect(true).toBe(false)
+
+	## Unknown route
 
 	it 'sets current to null if unable to match a route', () ->
 		router.go '/unknown'
