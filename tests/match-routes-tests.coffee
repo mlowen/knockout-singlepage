@@ -147,8 +147,15 @@ describe 'Knockout single page router route matching', () ->
 
 	# Hash extraction
 
-	it 'extracts the hash into a property of the current route', () -> expect(true).toBe(false)
-	it 'sets the hash property to be null when there is no hash in the URL', () -> expect(true).toBe(false)
+	it 'extracts the hash into a property of the current route', () ->
+		router.go '/#hash'
+
+		expect(router.current().hash).toBe('hash')
+
+	it 'sets the hash property to be null when there is no hash in the URL', () ->
+		router.go '/'
+
+		expect(router.current().hash).toBe(null)
 
 	# Query string extraction
 

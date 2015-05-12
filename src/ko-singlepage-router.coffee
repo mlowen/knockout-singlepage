@@ -43,6 +43,7 @@ class KnockoutSinglePageRouter
 
 		if route
 			params = {}
+			hash = null
 
 			if route.parameters.length
 				matches = url.match(route.regex)[1..]
@@ -50,8 +51,12 @@ class KnockoutSinglePageRouter
 				for index in [0..route.parameters.length - 1]
 					params[route.parameters[index]] = matches[index]
 
+			hashStart = url.indexOf('#') + 1
+			hash = url[hashStart ..] if hashStart > 0
+
 			@current
 				component: route.component
 				parameters: params
+				hash: hash
 		else
 			@current null
