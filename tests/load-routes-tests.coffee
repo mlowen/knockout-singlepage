@@ -12,7 +12,7 @@ describe 'Knockout single page router route loading', () ->
 		route = router.routes[0]
 
 		expect(route.component).toBe('default')
-		expect(route.regex.toString()).toBe((/^\/\/?(\?.*)?(#.*)?$/i).toString())
+		expect(route.regex.toString()).toBe((/^\/\/?(#.*)?(\?.*)?$/i).toString())
 
 	it 'loads a single route with a single path component', () ->
 		router = new KnockoutSinglePageRouter [
@@ -27,7 +27,7 @@ describe 'Knockout single page router route loading', () ->
 		route = router.routes[0]
 
 		expect(route.component).toBe('default')
-		expect(route.regex.toString()).toBe((/^\/foo\/?(\?.*)?(#.*)?$/i).toString())
+		expect(route.regex.toString()).toBe((/^\/foo\/?(#.*)?(\?.*)?$/i).toString())
 
 	it 'loads a single route with a multiple path components', () ->
 		router = new KnockoutSinglePageRouter [
@@ -42,7 +42,7 @@ describe 'Knockout single page router route loading', () ->
 		route = router.routes[0]
 
 		expect(route.component).toBe('default')
-		expect(route.regex.toString()).toBe((/^\/foo\/bar\/?(\?.*)?(#.*)?$/i).toString())
+		expect(route.regex.toString()).toBe((/^\/foo\/bar\/?(#.*)?(\?.*)?$/i).toString())
 
 	it 'loads multiple routes', () ->
 		router = new KnockoutSinglePageRouter [

@@ -17,7 +17,7 @@ class KnockoutSinglePageRouter
 
 			paramRegex = /:([a-z][a-z0-9]+)/ig
 			url = (if r.url[0] == '/' then r.url else '/' + r.url).trim()
-			regex = '^' + (url.replace /[-\/\\^$*+?.()|[\]{}]/g, '\\$&') + '\\/?(\\?.*)?(#.*)?$'
+			regex = '^' + (url.replace /[-\/\\^$*+?.()|[\]{}]/g, '\\$&') + '\\/?(#.*)?(\\?.*)?$'
 			parameters = r.url.match(paramRegex)
 			name = r.name.trim()
 
@@ -38,4 +38,6 @@ class KnockoutSinglePageRouter
 			@routes.push route
 
 	go: (url) ->
-		@current (@routes.filter (r) -> r.regex.test url)[0]
+		route = (@routes.filter (r) -> r.regex.test url)[0]
+
+		@current if route then route.component else null

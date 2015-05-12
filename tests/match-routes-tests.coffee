@@ -29,15 +29,15 @@ describe 'Knockout single page router route matching', () ->
 
 	it 'matches the default route', () ->
 		router.go '/'
-		expect(router.current().component).toBe('default')
+		expect(router.current()).toBe('default')
 
 	it 'matches the default route with a query string', () ->
 		router.go '/?foo=bar'
-		expect(router.current().component).toBe('default')
+		expect(router.current()).toBe('default')
 
 	it 'matches the default route with a hash', () ->
-			router.go '/#hash'
-			expect(router.current().component).toBe('default')
+		router.go '/#hash'
+		expect(router.current()).toBe('default')
 
 	it 'matches a single component route', () -> expect(true).toBe(false)
 	it 'matches a single component route with a query string', () -> expect(true).toBe(false)
