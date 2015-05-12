@@ -40,4 +40,8 @@ class KnockoutSinglePageRouter
 	go: (url) ->
 		route = (@routes.filter (r) -> r.regex.test url)[0]
 
-		@current if route then route.component else null
+		if route
+			@current
+				component: route.component
+		else
+			@current null
