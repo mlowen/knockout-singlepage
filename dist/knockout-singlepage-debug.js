@@ -175,11 +175,10 @@ initialise = function(ko) {
   }
 };
 
-  if(typeof define === 'function' && define.amd) {
-    define([ 'knockout' ], initialise);
-  } else if(!ko) {
-    throw 'Unable to find knockout';
-  } else {
-    initialise(ko);
-  }
+  var amdAvailable = typeof define === 'function' && define.amd;
+
+  if(amdAvailble) define([ 'knockout' ], initialise);
+
+  if(ko) initialise(ko);
+  else if (!amdAvailble) throw 'Unable to find knockout';
 })();
