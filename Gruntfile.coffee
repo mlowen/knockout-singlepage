@@ -30,8 +30,8 @@ module.exports = (grunt) ->
 			dist:
 				src: [
 					'src/fragments/prefix.js'
-					'build/ko-singlepage-router.js'
-					'build/ko-singlepage-extension.js'
+					'build/router.js'
+					'build/extension.js'
 					'src/fragments/suffix.js'
 				]
 				dest: 'dist/<%= pkg.name %>-debug.js'
