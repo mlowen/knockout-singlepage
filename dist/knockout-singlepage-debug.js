@@ -69,26 +69,38 @@ KnockoutSinglePageRouter = (function() {
   };
 
   function KnockoutSinglePageRouter(routes) {
-    var j, len, r, route;
     this.current = ko.observable(null);
     this.routes = [];
-    for (j = 0, len = routes.length; j < len; j++) {
-      r = routes[j];
-      if (!r) {
+    if (routes) {
+      this.add(routes);
+    }
+  }
+
+  KnockoutSinglePageRouter.prototype.add = function(route) {
+    var j, len, r, results;
+    if (Array.isArray(route)) {
+      results = [];
+      for (j = 0, len = route.length; j < len; j++) {
+        r = route[j];
+        results.push(this.add(r));
+      }
+      return results;
+    } else {
+      if (!route) {
         throw this.errors.invalidRoute;
       }
-      route = new Route(r);
+      r = new Route(route);
       if (this.routes.filter(function(i) {
-        return route.clashesWith(i);
+        return r.clashesWith(i);
       }).length) {
         throw this.errors.duplicateRoute;
       }
-      if (r.component) {
-        ko.components.register(route.component, r.component);
+      if (route.component) {
+        ko.components.register(r.component, route.component);
       }
-      this.routes.push(route);
+      return this.routes.push(r);
     }
-  }
+  };
 
   KnockoutSinglePageRouter.prototype.go = function(url) {
     var equalPosition, hash, hashStart, j, len, name, parameter, query, queryStart, queryStringParameters, ref, route, value;

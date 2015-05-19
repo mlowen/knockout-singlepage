@@ -7,16 +7,20 @@ class KnockoutSinglePageRouter
 		@current = ko.observable null
 		@routes = []
 
-		for r in routes
-			throw @errors.invalidRoute unless r
+		@add routes if routes
 
-			route = new Route r
+	add: (route) ->
+		if Array.isArray route
+			@add r for r in route
+		else
+			throw @errors.invalidRoute unless route
 
-			throw @errors.duplicateRoute if @routes.filter((i) -> route.clashesWith i).length
+			r = new Route route
 
-			ko.components.register route.component, r.component if r.component
+			throw @errors.duplicateRoute if @routes.filter((i) -> r.clashesWith i).length
+			ko.components.register r.component, route.component if route.component
 
-			@routes.push route
+			@routes.push r
 
 	go: (url) ->
 		route = (@routes.filter (r) -> r.matches url)[0]
