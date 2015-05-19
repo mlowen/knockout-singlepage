@@ -1,82 +1,103 @@
 (function() {
 
+var Route;
+
+Route = (function() {
+  Route.prototype.errors = {
+    invalidRouteName: 'Route has no name',
+    invalidRouteUrl: 'Route has an invalid URL'
+  };
+
+  Route.prototype.parameterRegex = /:([a-z][a-z0-9]+)/ig;
+
+  function Route(data) {
+    var name, parameters, regex, url;
+    if (!data.name) {
+      throw this.errors.invalidRouteName;
+    }
+    if (!data.url) {
+      throw this.errors.invalidRouteUrl;
+    }
+    name = data.name.trim();
+    url = (data.url[0] === '/' ? data.url : '/' + data.url).trim();
+    regex = '^' + (url.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')) + '\\/?(#.*)?(\\?.*)?$';
+    regex = regex.replace(this.parameterRegex, '([a-z0-9]+)');
+    parameters = data.url.match(this.parameterRegex);
+    if (!name) {
+      throw this.errors.invalidRouteName;
+    }
+    if (!url) {
+      throw this.errors.invalidRouteUrl;
+    }
+    this.component = name;
+    this.parameters = parameters ? parameters.map(function(item) {
+      return item.slice(1);
+    }) : [];
+    this.regex = new RegExp(regex, 'i');
+  }
+
+  Route.prototype.clashesWith = function(route) {
+    return route.component === this.component || route.regex.toString() === this.regex.toString();
+  };
+
+  Route.prototype.matches = function(url) {
+    return this.regex.test(url);
+  };
+
+  Route.prototype.extractParameters = function(url) {
+    var i, index, matches, params, ref;
+    params = {};
+    if (this.parameters.length) {
+      matches = url.match(this.regex).slice(1);
+      for (index = i = 0, ref = this.parameters.length - 1; 0 <= ref ? i <= ref : i >= ref; index = 0 <= ref ? ++i : --i) {
+        params[this.parameters[index]] = matches[index];
+      }
+    }
+    return params;
+  };
+
+  return Route;
+
+})();
+
 var KnockoutSinglePageRouter;
 
 KnockoutSinglePageRouter = (function() {
-  KnockoutSinglePageRouter.prototype.errorMessages = {
+  KnockoutSinglePageRouter.prototype.errors = {
     invalidRoute: 'Invalid route',
-    invalidRouteName: 'Route has no name',
-    invalidRouteUrl: 'Route has an invalid URL',
-    routesWithDuplicateName: 'Multiple routes added with the same name',
-    routesWithDuplicateUrl: 'Multiple routes added with the same URL'
+    duplicateRoute: 'Route clashes with existing route'
   };
 
   function KnockoutSinglePageRouter(routes) {
-    var existing, i, j, len, len1, name, paramRegex, parameters, r, ref, regex, route, url;
+    var j, len, r, route;
     this.current = ko.observable(null);
     this.routes = [];
-    for (i = 0, len = routes.length; i < len; i++) {
-      r = routes[i];
+    for (j = 0, len = routes.length; j < len; j++) {
+      r = routes[j];
       if (!r) {
-        throw this.errorMessages.invalidRoute;
+        throw this.errors.invalidRoute;
       }
-      if (!r.name) {
-        throw this.errorMessages.invalidRouteName;
-      }
-      if (!r.url) {
-        throw this.errorMessages.invalidRouteUrl;
-      }
-      paramRegex = /:([a-z][a-z0-9]+)/ig;
-      url = (r.url[0] === '/' ? r.url : '/' + r.url).trim();
-      regex = '^' + (url.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')) + '\\/?(#.*)?(\\?.*)?$';
-      regex = regex.replace(paramRegex, '([a-z0-9]+)');
-      parameters = r.url.match(paramRegex);
-      name = r.name.trim();
-      if (!name) {
-        throw this.errorMessages.invalidRouteName;
-      }
-      if (!url) {
-        throw this.errorMessages.invalidRouteUrl;
+      route = new Route(r);
+      if (this.routes.filter(function(i) {
+        return route.clashesWith(i);
+      }).length) {
+        throw this.errors.duplicateRoute;
       }
       if (r.component) {
-        ko.components.register(name, r.component);
-      }
-      route = {
-        component: name,
-        parameters: parameters ? parameters.map(function(item) {
-          return item.slice(1);
-        }) : [],
-        regex: new RegExp(regex, 'i')
-      };
-      ref = this.routes;
-      for (j = 0, len1 = ref.length; j < len1; j++) {
-        existing = ref[j];
-        if (existing.component === route.component) {
-          throw this.errorMessages.routesWithDuplicateName;
-        }
-        if (existing.regex.toString() === route.regex.toString()) {
-          throw this.errorMessages.routesWithDuplicateUrl;
-        }
+        ko.components.register(route.component, r.component);
       }
       this.routes.push(route);
     }
   }
 
   KnockoutSinglePageRouter.prototype.go = function(url) {
-    var equalPosition, hash, hashStart, i, index, j, len, matches, name, parameter, params, query, queryStart, queryStringParameters, ref, ref1, route, value;
+    var equalPosition, hash, hashStart, j, len, name, parameter, query, queryStart, queryStringParameters, ref, route, value;
     route = (this.routes.filter(function(r) {
-      return r.regex.test(url);
+      return r.matches(url);
     }))[0];
     if (route) {
-      params = {};
       query = {};
       hash = null;
-      if (route.parameters.length) {
-        matches = url.match(route.regex).slice(1);
-        for (index = i = 0, ref = route.parameters.length - 1; 0 <= ref ? i <= ref : i >= ref; index = 0 <= ref ? ++i : --i) {
-          params[route.parameters[index]] = matches[index];
-        }
-      }
       hashStart = url.indexOf('#') + 1;
       queryStart = url.indexOf('?') + 1;
       if (hashStart > 0) {
@@ -95,7 +116,7 @@ KnockoutSinglePageRouter = (function() {
           name = null;
           value = null;
           if (equalPosition > 0) {
-            ref1 = parameter.split('='), name = ref1[0], value = ref1[1];
+            ref = parameter.split('='), name = ref[0], value = ref[1];
           } else {
             name = parameter;
           }
@@ -114,7 +135,7 @@ KnockoutSinglePageRouter = (function() {
       }
       return this.current({
         component: route.component,
-        parameters: params,
+        parameters: route.extractParameters(url),
         hash: hash,
         query: query
       });

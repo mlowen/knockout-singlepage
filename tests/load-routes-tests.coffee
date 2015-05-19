@@ -163,7 +163,7 @@ describe 'Knockout single page router route loading', () ->
 				name: 'default'
 				url: '/foo'
 			}
-		]).toThrow('Multiple routes added with the same name')
+		]).toThrow('Route clashes with existing route')
 
 	it 'throws an error when trying to add multiple routes with the same URL pattern', () ->
 		expect(() -> new KnockoutSinglePageRouter [
@@ -175,4 +175,4 @@ describe 'Knockout single page router route loading', () ->
 				name: 'second'
 				url: '/'
 			}
-		]).toThrow('Multiple routes added with the same URL')
+		]).toThrow('Route clashes with existing route')

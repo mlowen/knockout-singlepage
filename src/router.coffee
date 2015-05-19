@@ -1,56 +1,29 @@
 class KnockoutSinglePageRouter
-	errorMessages:
+	errors:
 		invalidRoute: 'Invalid route'
-		invalidRouteName: 'Route has no name'
-		invalidRouteUrl: 'Route has an invalid URL'
-		routesWithDuplicateName: 'Multiple routes added with the same name'
-		routesWithDuplicateUrl: 'Multiple routes added with the same URL'
+		duplicateRoute: 'Route clashes with existing route'
 
 	constructor: (routes) ->
 		@current = ko.observable null
 		@routes = []
 
 		for r in routes
-			throw @errorMessages.invalidRoute unless r
-			throw @errorMessages.invalidRouteName unless r.name
-			throw @errorMessages.invalidRouteUrl unless r.url
+			throw @errors.invalidRoute unless r
 
-			paramRegex = /:([a-z][a-z0-9]+)/ig
-			url = (if r.url[0] == '/' then r.url else '/' + r.url).trim()
-			regex = '^' + (url.replace /[-\/\\^$*+?.()|[\]{}]/g, '\\$&') + '\\/?(#.*)?(\\?.*)?$'
-			regex = regex.replace paramRegex, '([a-z0-9]+)'
-			parameters = r.url.match paramRegex
-			name = r.name.trim()
+			route = new Route r
 
-			throw @errorMessages.invalidRouteName unless name
-			throw @errorMessages.invalidRouteUrl unless url
+			throw @errors.duplicateRoute if @routes.filter((i) -> route.clashesWith i).length
 
-			ko.components.register name, r.component if r.component
-
-			route =
-				component: name
-				parameters: if parameters then parameters.map((item) -> item[1 ..]) else []
-				regex: new RegExp regex, 'i'
-
-			for existing in @routes
-				throw @errorMessages.routesWithDuplicateName if existing.component == route.component
-				throw @errorMessages.routesWithDuplicateUrl if existing.regex.toString() == route.regex.toString()
+			ko.components.register route.component, r.component if r.component
 
 			@routes.push route
 
 	go: (url) ->
-		route = (@routes.filter (r) -> r.regex.test url)[0]
+		route = (@routes.filter (r) -> r.matches url)[0]
 
 		if route
-			params = {}
 			query = {}
 			hash = null
-
-			if route.parameters.length
-				matches = url.match(route.regex)[1..]
-
-				for index in [0..route.parameters.length - 1]
-					params[route.parameters[index]] = matches[index]
 
 			hashStart = url.indexOf('#') + 1
 			queryStart = url.indexOf('?') + 1
@@ -83,7 +56,7 @@ class KnockoutSinglePageRouter
 
 			@current
 				component: route.component
-				parameters: params
+				parameters: route.extractParameters url
 				hash: hash
 				query: query
 		else

@@ -30,6 +30,7 @@ module.exports = (grunt) ->
 			dist:
 				src: [
 					'src/fragments/prefix.js'
+					'build/route.js'
 					'build/router.js'
 					'build/extension.js'
 					'src/fragments/suffix.js'

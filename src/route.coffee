@@ -6,17 +6,17 @@ class Route
 	parameterRegex: /:([a-z][a-z0-9]+)/ig
 
 	constructor: (data) ->
-		throw errors.invalidRouteName unless data.name
-		throw errors.invalidRouteUrl unless data.url
+		throw @errors.invalidRouteName unless data.name
+		throw @errors.invalidRouteUrl unless data.url
 
-		name = r.name.trim()
-		url = (if r.url[0] == '/' then r.url else '/' + r.url).trim()
+		name = data.name.trim()
+		url = (if data.url[0] == '/' then data.url else '/' + data.url).trim()
 		regex = '^' + (url.replace /[-\/\\^$*+?.()|[\]{}]/g, '\\$&') + '\\/?(#.*)?(\\?.*)?$'
 		regex = regex.replace @parameterRegex, '([a-z0-9]+)'
-		parameters = r.url.match @parameterRegex
+		parameters = data.url.match @parameterRegex
 
-		throw errors.invalidRouteName unless name
-		throw errors.invalidRouteUrl unless url
+		throw @errors.invalidRouteName unless name
+		throw @errors.invalidRouteUrl unless url
 
 		@component = name
 		@parameters = if parameters then parameters.map((item) -> item[1 ..]) else []
@@ -31,9 +31,9 @@ class Route
 		params = {}
 
 		if @parameters.length
-			matches = url.match(route.regex)[1..]
+			matches = url.match(@regex)[1..]
 
-			for index in [0..route.parameters.length - 1]
-				params[route.parameters[index]] = matches[index]
+			for index in [0..@parameters.length - 1]
+				params[@parameters[index]] = matches[index]
 
 		params
