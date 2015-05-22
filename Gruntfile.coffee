@@ -54,5 +54,5 @@ module.exports = (grunt) ->
 	grunt.loadNpmTasks 'grunt-contrib-jasmine'
 	grunt.loadNpmTasks 'grunt-contrib-clean'
 
-	grunt.registerTask 'default', [ 'clean', 'coffee', 'jasmine', 'concat', 'uglify' ]
 	grunt.registerTask 'test', [ 'clean', 'coffee', 'jasmine' ]
+	grunt.registerTask 'default', [ 'test', 'concat', 'uglify' ]
