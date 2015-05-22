@@ -25,122 +25,120 @@ describe 'Knockout single page router route matching', () ->
 			}
 		]
 
-	beforeEach () -> router.current null
-
 	# Route Matching
 
 	## Default
 
 	it 'matches the default route', () ->
-		router.go '/'
-		expect(router.current().component).toBe('default')
+		route = router.get '/'
+		expect(route.component).toBe('default')
 
 	it 'matches the default route with a query string', () ->
-		router.go '/?foo=bar'
-		expect(router.current().component).toBe('default')
+		route = router.get '/?foo=bar'
+		expect(route.component).toBe('default')
 
 	it 'matches the default route with a hash', () ->
-		router.go '/#hash'
-		expect(router.current().component).toBe('default')
+		route = router.get '/#hash'
+		expect(route.component).toBe('default')
 
 	it 'matches the default route with a hash and a query string', () ->
-		router.go '/#hash?foo=bar'
-		expect(router.current().component).toBe('default')
+		route = router.get '/#hash?foo=bar'
+		expect(route.component).toBe('default')
 
 	## Single component
 
 	it 'matches a single component route', () ->
-		router.go '/foo'
-		expect(router.current().component).toBe('single')
+		route = router.get '/foo'
+		expect(route.component).toBe('single')
 
 	it 'matches a single component route with a query string', () ->
-		router.go '/foo?foo=bar'
-		expect(router.current().component).toBe('single')
+		route = router.get '/foo?foo=bar'
+		expect(route.component).toBe('single')
 
 	it 'matches a single component route with a hash', () ->
-		router.go '/foo#hash'
-		expect(router.current().component).toBe('single')
+		route = router.get '/foo#hash'
+		expect(route.component).toBe('single')
 
 	it 'matches a single component route with a hash and a query string', () ->
-		router.go '/foo#hash?foo=bar'
-		expect(router.current().component).toBe('single')
+		route = router.get '/foo#hash?foo=bar'
+		expect(route.component).toBe('single')
 
 	## Multiple components
 
 	it 'matches a multi component route', () ->
-		router.go '/foo/bar'
-		expect(router.current().component).toBe('multi')
+		route = router.get '/foo/bar'
+		expect(route.component).toBe('multi')
 
 	it 'matches a multi component route with a query string', () ->
-		router.go '/foo/bar?foo=bar'
-		expect(router.current().component).toBe('multi')
+		route = router.get '/foo/bar?foo=bar'
+		expect(route.component).toBe('multi')
 
 	it 'matches a multi component matches the default route with a hash', () ->
-		router.go '/foo/bar#hash'
-		expect(router.current().component).toBe('multi')
+		route = router.get '/foo/bar#hash'
+		expect(route.component).toBe('multi')
 
 	it 'matches a multi component matches the default route with a hash and a query string', () ->
-		router.go '/foo/bar#hash?foo=bar'
-		expect(router.current().component).toBe('multi')
+		route = router.get '/foo/bar#hash?foo=bar'
+		expect(route.component).toBe('multi')
 
 	## Single parameter
 
 	it 'matches a route with a parameter', () ->
-		router.go '/foo/123'
+		route = router.get '/foo/123'
 
-		expect(router.current().component).toBe('parameter')
-		expect(router.current().parameters.id).toBe('123')
+		expect(route.component).toBe('parameter')
+		expect(route.parameters.id).toBe('123')
 
 	it 'matches a route with a parameter and a query string', () ->
-		router.go '/foo/123?foo=bar'
+		route = router.get '/foo/123?foo=bar'
 
-		expect(router.current().component).toBe('parameter')
-		expect(router.current().parameters.id).toBe('123')
+		expect(route.component).toBe('parameter')
+		expect(route.parameters.id).toBe('123')
 
 	it 'matches a route with a parameter and a hash', () ->
-		router.go '/foo/123#hash'
+		route = router.get '/foo/123#hash'
 
-		expect(router.current().component).toBe('parameter')
-		expect(router.current().parameters.id).toBe('123')
+		expect(route.component).toBe('parameter')
+		expect(route.parameters.id).toBe('123')
 
 	it 'matches a route with a parameter and a hash and a query string', () ->
-		router.go '/foo/123#hash?foo=bar'
+		route = router.get '/foo/123#hash?foo=bar'
 
-		expect(router.current().component).toBe('parameter')
-		expect(router.current().parameters.id).toBe('123')
+		expect(route.component).toBe('parameter')
+		expect(route.parameters.id).toBe('123')
 
 	## Multiple parameters
 
 	it 'matches a route with multiple parameters', () ->
-		router.go '/foo/123/bar/abc'
+		route = router.get '/foo/123/bar/abc'
 
-		expect(router.current().component).toBe('multiparameters')
-		expect(router.current().parameters.foo).toBe('123')
-		expect(router.current().parameters.bar).toBe('abc')
+		expect(route.component).toBe('multiparameters')
+		expect(route.parameters.foo).toBe('123')
+		expect(route.parameters.bar).toBe('abc')
 
 	it 'matches a route with multiple parameters and a query string', () ->
-		router.go '/foo/123/bar/abc?foo=bar'
+		route = router.get '/foo/123/bar/abc?foo=bar'
 
-		expect(router.current().component).toBe('multiparameters')
-		expect(router.current().parameters.foo).toBe('123')
-		expect(router.current().parameters.bar).toBe('abc')
+		expect(route.component).toBe('multiparameters')
+		expect(route.parameters.foo).toBe('123')
+		expect(route.parameters.bar).toBe('abc')
 
 	it 'matches a route with multiple parameters and a hash', () ->
-		router.go '/foo/123/bar/abc#hash'
+		route = router.get '/foo/123/bar/abc#hash'
 
-		expect(router.current().component).toBe('multiparameters')
-		expect(router.current().parameters.foo).toBe('123')
-		expect(router.current().parameters.bar).toBe('abc')
+		expect(route.component).toBe('multiparameters')
+		expect(route.parameters.foo).toBe('123')
+		expect(route.parameters.bar).toBe('abc')
 
 	it 'matches a route with a parameter and a hash and a query string', () ->
-		router.go '/foo/123/bar/abc#hash?foo=bar'
+		route = router.get '/foo/123/bar/abc#hash?foo=bar'
 
-		expect(router.current().component).toBe('multiparameters')
-		expect(router.current().parameters.foo).toBe('123')
-		expect(router.current().parameters.bar).toBe('abc')
+		expect(route.component).toBe('multiparameters')
+		expect(route.parameters.foo).toBe('123')
+		expect(route.parameters.bar).toBe('abc')
 
 	## Unknown route
 
 	it 'sets current to null if unable to match a route', () ->
-		router.go '/unknown'
-		expect(router.current()).toBe(null)
+		route = router.get '/unknown'
+		expect(route).toBe(null)

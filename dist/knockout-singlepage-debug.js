@@ -115,7 +115,6 @@ KnockoutSinglePageRouter = (function() {
   };
 
   function KnockoutSinglePageRouter(routes) {
-    this.current = ko.observable(null);
     this.routes = [];
     if (routes) {
       this.add(routes);
@@ -148,19 +147,19 @@ KnockoutSinglePageRouter = (function() {
     }
   };
 
-  KnockoutSinglePageRouter.prototype.go = function(url) {
-    var route;
-    route = (this.routes.filter(function(r) {
+  KnockoutSinglePageRouter.prototype.get = function(url) {
+    var match, route;
+    match = (this.routes.filter(function(r) {
       return r.matches(url);
     }))[0];
-    if (route) {
-      return this.current({
-        component: route.component,
-        parameters: route.extractParameters(url)
-      });
-    } else {
-      return this.current(null);
+    route = null;
+    if (match) {
+      route = {
+        component: match.component,
+        parameters: match.extractParameters(url)
+      };
     }
+    return route;
   };
 
   return KnockoutSinglePageRouter;

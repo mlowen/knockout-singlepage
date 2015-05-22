@@ -4,9 +4,7 @@ class KnockoutSinglePageRouter
 		duplicateRoute: 'Route clashes with existing route'
 
 	constructor: (routes) ->
-		@current = ko.observable null
 		@routes = []
-
 		@add routes if routes
 
 	add: (route) ->
@@ -22,12 +20,13 @@ class KnockoutSinglePageRouter
 
 			@routes.push r
 
-	go: (url) ->
-		route = (@routes.filter (r) -> r.matches url)[0]
+	get: (url) ->
+		match = (@routes.filter (r) -> r.matches url)[0]
+		route = null
 
-		if route
-			@current
-				component: route.component
-				parameters: route.extractParameters url
-		else
-			@current null
+		if match
+			route =
+				component: match.component
+				parameters: match.extractParameters url
+
+		route
