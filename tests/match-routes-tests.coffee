@@ -1,4 +1,4 @@
-describe 'Knockout single page router route matching', () ->
+describe 'Router matching url to route', () ->
 	router = null
 
 	beforeAll () ->

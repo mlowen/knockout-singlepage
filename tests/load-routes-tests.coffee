@@ -1,4 +1,4 @@
-describe 'Knockout single page router route loading', () ->
+describe 'Router loading routes', () ->
 	it 'loads a single index route', () ->
 		router = new Router [
 			{

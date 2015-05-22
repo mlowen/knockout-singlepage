@@ -174,6 +174,12 @@ initialise = function(ko) {
     function KnockoutSinglePageExtension() {
       this.router = null;
       this.baseUrl = location.protocol + '//' + location.host;
+      this.viewModel = {
+        component: ko.observable(null),
+        parameters: ko.observable(null),
+        hash: ko.observable(null),
+        query: ko.observable
+      };
     }
 
     KnockoutSinglePageExtension.prototype.init = function(routes, element) {
@@ -185,7 +191,7 @@ initialise = function(ko) {
       if (!element) {
         element = document.body;
       }
-      element.setAttribute('data-bind', 'component: { name: current().compoent, params: { params: current().parameters, hash: current().hash, query: current().query } }');
+      element.setAttribute('data-bind', 'component: { name: component(), params: { params: parameters(), hash: hash(), query: query() } }');
       document.body.addEventListener('click', (function(_this) {
         return function(e) {
           if (e.target.tagName.toLowerCase() === 'a' && e.target.href.slice(0, _this.baseUrl.length) === _this.baseUrl) {
@@ -195,15 +201,23 @@ initialise = function(ko) {
           }
         };
       })(this), false);
-      return ko.applyBindings(this.router);
+      return ko.applyBindings(this.viewModel);
     };
 
     KnockoutSinglePageExtension.prototype.go = function(url) {
+      var queryData, route;
       if (!this.router) {
         throw 'Router has not been initialised';
       }
-      history.pushState(null, null, url);
-      return this.router.go(url);
+      route = this.router.get(url);
+      if (route) {
+        history.pushState(null, null, url);
+        queryData = urlQueryParser(url);
+        this.viewModel.hash(queryData.hash);
+        this.viewModel.query(queryData.query);
+        this.viewModel.parameters(route.parameters);
+        return this.viewModel.component(route.compoent);
+      }
     };
 
     return KnockoutSinglePageExtension;
