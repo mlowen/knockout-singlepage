@@ -106,22 +106,22 @@ Route = (function() {
 
 })();
 
-var KnockoutSinglePageRouter;
+var Router;
 
-KnockoutSinglePageRouter = (function() {
-  KnockoutSinglePageRouter.prototype.errors = {
+Router = (function() {
+  Router.prototype.errors = {
     invalidRoute: 'Invalid route',
     duplicateRoute: 'Route clashes with existing route'
   };
 
-  function KnockoutSinglePageRouter(routes) {
+  function Router(routes) {
     this.routes = [];
     if (routes) {
       this.add(routes);
     }
   }
 
-  KnockoutSinglePageRouter.prototype.add = function(route) {
+  Router.prototype.add = function(route) {
     var j, len, r, results;
     if (Array.isArray(route)) {
       results = [];
@@ -147,7 +147,7 @@ KnockoutSinglePageRouter = (function() {
     }
   };
 
-  KnockoutSinglePageRouter.prototype.get = function(url) {
+  Router.prototype.get = function(url) {
     var match, route;
     match = (this.routes.filter(function(r) {
       return r.matches(url);
@@ -162,7 +162,7 @@ KnockoutSinglePageRouter = (function() {
     return route;
   };
 
-  return KnockoutSinglePageRouter;
+  return Router;
 
 })();
 

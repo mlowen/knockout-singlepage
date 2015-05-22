@@ -1,6 +1,6 @@
 describe 'Knockout single page router route loading', () ->
 	it 'loads a single index route', () ->
-		router = new KnockoutSinglePageRouter [
+		router = new Router [
 			{
 				name: 'default'
 				url: '/'
@@ -15,7 +15,7 @@ describe 'Knockout single page router route loading', () ->
 		expect(route.regex.toString()).toBe((/^\/\/?(#.*)?(\?.*)?$/i).toString())
 
 	it 'loads a single route with a single path component', () ->
-		router = new KnockoutSinglePageRouter [
+		router = new Router [
 			{
 				name: 'default'
 				url: '/foo'
@@ -30,7 +30,7 @@ describe 'Knockout single page router route loading', () ->
 		expect(route.regex.toString()).toBe((/^\/foo\/?(#.*)?(\?.*)?$/i).toString())
 
 	it 'loads a single route with a multiple path components', () ->
-		router = new KnockoutSinglePageRouter [
+		router = new Router [
 			{
 				name: 'default'
 				url: '/foo/bar'
@@ -45,7 +45,7 @@ describe 'Knockout single page router route loading', () ->
 		expect(route.regex.toString()).toBe((/^\/foo\/bar\/?(#.*)?(\?.*)?$/i).toString())
 
 	it 'loads multiple routes', () ->
-		router = new KnockoutSinglePageRouter [
+		router = new Router [
 			{
 				name: 'first'
 				url: '/'
@@ -59,7 +59,7 @@ describe 'Knockout single page router route loading', () ->
 		expect(router.routes.length).toBe(2)
 
 	it 'extracts a parameter from a route', () ->
-		router = new KnockoutSinglePageRouter [
+		router = new Router [
 			{
 				name: 'default'
 				url: '/foo/:id'
@@ -73,7 +73,7 @@ describe 'Knockout single page router route loading', () ->
 		expect('id' in route.parameters).toBe(true)
 
 	it 'extracts multiple parameters from a route', () ->
-		router = new KnockoutSinglePageRouter [
+		router = new Router [
 			{
 				name: 'default'
 				url: '/foo/:id/bar/:bar'
@@ -90,7 +90,7 @@ describe 'Knockout single page router route loading', () ->
 	it 'registers a component if it supplied one', () ->
 		expect(ko.components.isRegistered 'default').toBe(false)
 
-		router = new KnockoutSinglePageRouter [
+		router = new Router [
 			{
 				name: 'default'
 				url: '/'
@@ -103,19 +103,19 @@ describe 'Knockout single page router route loading', () ->
 		expect(ko.components.isRegistered 'default').toBe(true)
 
 	it 'throws an error when the array contains a null route', () ->
-		expect(() -> new KnockoutSinglePageRouter [
+		expect(() -> new Router [
 			null
 		]).toThrow('Invalid route')
 
 	it 'throws an error when trying to add a route with null name', () ->
-		expect(() -> new KnockoutSinglePageRouter [
+		expect(() -> new Router [
 			{
 				url: '/'
 			}
 		]).toThrow('Route has no name')
 
 	it 'throws an error when trying to add a route with empty name', () ->
-		expect(() -> new KnockoutSinglePageRouter [
+		expect(() -> new Router [
 			{
 				name: ''
 				url: '/'
@@ -123,7 +123,7 @@ describe 'Knockout single page router route loading', () ->
 		]).toThrow('Route has no name')
 
 	it 'throws an error when trying to add a route with null name', () ->
-		expect(() -> new KnockoutSinglePageRouter [
+		expect(() -> new Router [
 			{
 				name: null
 				url: '/'
@@ -131,7 +131,7 @@ describe 'Knockout single page router route loading', () ->
 		]).toThrow('Route has no name')
 
 	it 'throws an error when the url is null', () ->
-		expect(() -> new KnockoutSinglePageRouter [
+		expect(() -> new Router [
 			{
 				name: 'default'
 				url: null
@@ -139,14 +139,14 @@ describe 'Knockout single page router route loading', () ->
 		]).toThrow('Route has an invalid URL')
 
 	it 'throws an error when the url is undefined', () ->
-		expect(() -> new KnockoutSinglePageRouter [
+		expect(() -> new Router [
 			{
 				name: 'default'
 			}
 		]).toThrow('Route has an invalid URL')
 
 	it 'throws an error when the url is an empty string', () ->
-		expect(() -> new KnockoutSinglePageRouter [
+		expect(() -> new Router [
 			{
 				name: 'default'
 				url: ''
@@ -154,7 +154,7 @@ describe 'Knockout single page router route loading', () ->
 		]).toThrow('Route has an invalid URL')
 
 	it 'throws an error when trying to add multiple routes with the same name', () ->
-		expect(() -> new KnockoutSinglePageRouter [
+		expect(() -> new Router [
 			{
 				name: 'default'
 				url: '/'
@@ -166,7 +166,7 @@ describe 'Knockout single page router route loading', () ->
 		]).toThrow('Route clashes with existing route')
 
 	it 'throws an error when trying to add multiple routes with the same URL pattern', () ->
-		expect(() -> new KnockoutSinglePageRouter [
+		expect(() -> new Router [
 			{
 				name: 'first'
 				url: '/'

@@ -2,7 +2,7 @@ describe 'Knockout single page router route matching', () ->
 	router = null
 
 	beforeAll () ->
-		router = new KnockoutSinglePageRouter [
+		router = new Router [
 			{
 				name: 'default'
 				url: '/'

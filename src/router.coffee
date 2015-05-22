@@ -1,4 +1,4 @@
-class KnockoutSinglePageRouter
+class Router
 	errors:
 		invalidRoute: 'Invalid route'
 		duplicateRoute: 'Route clashes with existing route'
