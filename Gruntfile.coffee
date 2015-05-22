@@ -1,6 +1,7 @@
 module.exports = (grunt) ->
 	grunt.initConfig
 		pkg: grunt.file.readJSON 'package.json'
+		clean: [ 'build', 'tests/*.js' ]
 		coffee:
 			compile:
 				options:
@@ -30,6 +31,7 @@ module.exports = (grunt) ->
 			dist:
 				src: [
 					'src/fragments/prefix.js'
+					'build/url-query-parser.js'
 					'build/route.js'
 					'build/router.js'
 					'build/extension.js'
@@ -50,6 +52,7 @@ module.exports = (grunt) ->
 	grunt.loadNpmTasks 'grunt-contrib-uglify'
 	grunt.loadNpmTasks 'grunt-contrib-watch'
 	grunt.loadNpmTasks 'grunt-contrib-jasmine'
+	grunt.loadNpmTasks 'grunt-contrib-clean'
 
-	grunt.registerTask 'default', [ 'coffee', 'jasmine', 'concat', 'uglify' ]
-	grunt.registerTask 'test', [ 'coffee', 'jasmine' ]
+	grunt.registerTask 'default', [ 'clean', 'coffee', 'jasmine', 'concat', 'uglify' ]
+	grunt.registerTask 'test', [ 'clean', 'coffee', 'jasmine' ]

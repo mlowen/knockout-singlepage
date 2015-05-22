@@ -1,5 +1,51 @@
 (function() {
 
+var urlQueryParser;
+
+urlQueryParser = function(url) {
+  var data, equalPosition, hashStart, i, len, name, parameter, queryStart, queryStringParameters, ref, value;
+  data = {
+    hash: null,
+    query: {}
+  };
+  hashStart = url.indexOf('#') + 1;
+  queryStart = url.indexOf('?') + 1;
+  if (hashStart > 0) {
+    if (queryStart < 1) {
+      data.hash = url.slice(hashStart);
+    }
+    if (queryStart > hashStart) {
+      data.hash = url.slice(hashStart, +(queryStart - 2) + 1 || 9e9);
+    }
+  }
+  if (queryStart > 0) {
+    queryStringParameters = url.slice(queryStart).split('&');
+    for (i = 0, len = queryStringParameters.length; i < len; i++) {
+      parameter = queryStringParameters[i];
+      equalPosition = parameter.indexOf('=');
+      name = null;
+      value = null;
+      if (equalPosition > 0) {
+        ref = parameter.split('='), name = ref[0], value = ref[1];
+      } else {
+        name = parameter;
+      }
+      if (data.query[name]) {
+        if (value) {
+          if ('array' === typeof data.query[name]) {
+            data.query[name].push(value);
+          } else {
+            data.query[name] = [data.query[name], value];
+          }
+        }
+      } else {
+        data.query[name] = value;
+      }
+    }
+  }
+  return data;
+};
+
 var Route;
 
 Route = (function() {
@@ -103,53 +149,14 @@ KnockoutSinglePageRouter = (function() {
   };
 
   KnockoutSinglePageRouter.prototype.go = function(url) {
-    var equalPosition, hash, hashStart, j, len, name, parameter, query, queryStart, queryStringParameters, ref, route, value;
+    var route;
     route = (this.routes.filter(function(r) {
       return r.matches(url);
     }))[0];
     if (route) {
-      query = {};
-      hash = null;
-      hashStart = url.indexOf('#') + 1;
-      queryStart = url.indexOf('?') + 1;
-      if (hashStart > 0) {
-        if (queryStart < 1) {
-          hash = url.slice(hashStart);
-        }
-        if (queryStart > hashStart) {
-          hash = url.slice(hashStart, +(queryStart - 2) + 1 || 9e9);
-        }
-      }
-      if (queryStart > 0) {
-        queryStringParameters = url.slice(queryStart).split('&');
-        for (j = 0, len = queryStringParameters.length; j < len; j++) {
-          parameter = queryStringParameters[j];
-          equalPosition = parameter.indexOf('=');
-          name = null;
-          value = null;
-          if (equalPosition > 0) {
-            ref = parameter.split('='), name = ref[0], value = ref[1];
-          } else {
-            name = parameter;
-          }
-          if (query[name]) {
-            if (value) {
-              if ('array' === typeof query[name]) {
-                query[name].push(value);
-              } else {
-                query[name] = [query[name], value];
-              }
-            }
-          } else {
-            query[name] = value;
-          }
-        }
-      }
       return this.current({
         component: route.component,
-        parameters: route.extractParameters(url),
-        hash: hash,
-        query: query
+        parameters: route.extractParameters(url)
       });
     } else {
       return this.current(null);
