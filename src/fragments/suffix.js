@@ -1,7 +1,7 @@
   var amdAvailable = typeof define === 'function' && define.amd;
 
-  if(amdAvailble) define([ 'knockout' ], initialise);
+  if(amdAvailable) define([ 'knockout' ], initialise);
 
-  if(ko) initialise(ko);
-  else if (!amdAvailble) throw 'Unable to find knockout';
+  if('undefined' !== typeof ko) initialise(ko);
+  else if (!amdAvailable) throw 'Unable to find knockout';
 })();

@@ -4,4 +4,5 @@ build
 .grunt
 
 tests/**/*.js
+demo/**/*.js
 _SpecRunner.html
