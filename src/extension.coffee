@@ -7,13 +7,13 @@ initialise = (ko) ->
 				component: ko.observable null
 				parameters: ko.observable null
 				hash: ko.observable null
-				query: ko.observable
+				query: ko.observable null
 
 		init: (routes, element) ->
 			throw 'Router has already been initialised' if @router
 
-			@router = new Router routes
-			@router.go location.pathname
+			@router = new Router ko, routes
+			@go location.pathname
 
 			element = document.body unless element
 			element.setAttribute 'data-bind', 'component: { name: component(), params: { params: parameters(), hash: hash(), query: query() } }'
@@ -40,6 +40,6 @@ initialise = (ko) ->
 				@viewModel.hash queryData.hash
 				@viewModel.query queryData.query
 				@viewModel.parameters route.parameters
-				@viewModel.component route.compoent
+				@viewModel.component route.component
 
 	ko.singlePage = new KnockoutSinglePageExtension() unless ko.singlePage

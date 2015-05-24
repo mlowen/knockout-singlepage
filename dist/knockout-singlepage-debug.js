@@ -114,7 +114,8 @@ Router = (function() {
     duplicateRoute: 'Route clashes with existing route'
   };
 
-  function Router(routes) {
+  function Router(ko, routes) {
+    this.ko = ko;
     this.routes = [];
     if (routes) {
       this.add(routes);
@@ -141,7 +142,7 @@ Router = (function() {
         throw this.errors.duplicateRoute;
       }
       if (route.component) {
-        ko.components.register(r.component, route.component);
+        this.ko.components.register(r.component, route.component);
       }
       return this.routes.push(r);
     }
@@ -178,7 +179,7 @@ initialise = function(ko) {
         component: ko.observable(null),
         parameters: ko.observable(null),
         hash: ko.observable(null),
-        query: ko.observable
+        query: ko.observable(null)
       };
     }
 
@@ -186,8 +187,8 @@ initialise = function(ko) {
       if (this.router) {
         throw 'Router has already been initialised';
       }
-      this.router = new Router(routes);
-      this.router.go(location.pathname);
+      this.router = new Router(ko, routes);
+      this.go(location.pathname);
       if (!element) {
         element = document.body;
       }
@@ -216,7 +217,7 @@ initialise = function(ko) {
         this.viewModel.hash(queryData.hash);
         this.viewModel.query(queryData.query);
         this.viewModel.parameters(route.parameters);
-        return this.viewModel.component(route.compoent);
+        return this.viewModel.component(route.component);
       }
     };
 

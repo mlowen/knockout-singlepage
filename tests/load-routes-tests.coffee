@@ -1,6 +1,6 @@
 describe 'Router loading routes', () ->
 	it 'loads a single index route', () ->
-		router = new Router [
+		router = new Router ko, [
 			{
 				name: 'default'
 				url: '/'
@@ -15,7 +15,7 @@ describe 'Router loading routes', () ->
 		expect(route.regex.toString()).toBe((/^\/\/?(#.*)?(\?.*)?$/i).toString())
 
 	it 'loads a single route with a single path component', () ->
-		router = new Router [
+		router = new Router ko, [
 			{
 				name: 'default'
 				url: '/foo'
@@ -30,7 +30,7 @@ describe 'Router loading routes', () ->
 		expect(route.regex.toString()).toBe((/^\/foo\/?(#.*)?(\?.*)?$/i).toString())
 
 	it 'loads a single route with a multiple path components', () ->
-		router = new Router [
+		router = new Router ko, [
 			{
 				name: 'default'
 				url: '/foo/bar'
@@ -45,7 +45,7 @@ describe 'Router loading routes', () ->
 		expect(route.regex.toString()).toBe((/^\/foo\/bar\/?(#.*)?(\?.*)?$/i).toString())
 
 	it 'loads multiple routes', () ->
-		router = new Router [
+		router = new Router ko, [
 			{
 				name: 'first'
 				url: '/'
@@ -59,7 +59,7 @@ describe 'Router loading routes', () ->
 		expect(router.routes.length).toBe(2)
 
 	it 'extracts a parameter from a route', () ->
-		router = new Router [
+		router = new Router ko, [
 			{
 				name: 'default'
 				url: '/foo/:id'
@@ -73,7 +73,7 @@ describe 'Router loading routes', () ->
 		expect('id' in route.parameters).toBe(true)
 
 	it 'extracts multiple parameters from a route', () ->
-		router = new Router [
+		router = new Router ko, [
 			{
 				name: 'default'
 				url: '/foo/:id/bar/:bar'
@@ -90,7 +90,7 @@ describe 'Router loading routes', () ->
 	it 'registers a component if it supplied one', () ->
 		expect(ko.components.isRegistered 'default').toBe(false)
 
-		router = new Router [
+		router = new Router ko, [
 			{
 				name: 'default'
 				url: '/'
@@ -103,19 +103,19 @@ describe 'Router loading routes', () ->
 		expect(ko.components.isRegistered 'default').toBe(true)
 
 	it 'throws an error when the array contains a null route', () ->
-		expect(() -> new Router [
+		expect(() -> new Router ko, [
 			null
 		]).toThrow('Invalid route')
 
 	it 'throws an error when trying to add a route with null name', () ->
-		expect(() -> new Router [
+		expect(() -> new Router ko, [
 			{
 				url: '/'
 			}
 		]).toThrow('Route has no name')
 
 	it 'throws an error when trying to add a route with empty name', () ->
-		expect(() -> new Router [
+		expect(() -> new Router ko, [
 			{
 				name: ''
 				url: '/'
@@ -123,7 +123,7 @@ describe 'Router loading routes', () ->
 		]).toThrow('Route has no name')
 
 	it 'throws an error when trying to add a route with null name', () ->
-		expect(() -> new Router [
+		expect(() -> new Router ko, [
 			{
 				name: null
 				url: '/'
@@ -131,7 +131,7 @@ describe 'Router loading routes', () ->
 		]).toThrow('Route has no name')
 
 	it 'throws an error when the url is null', () ->
-		expect(() -> new Router [
+		expect(() -> new Router ko, [
 			{
 				name: 'default'
 				url: null
@@ -139,14 +139,14 @@ describe 'Router loading routes', () ->
 		]).toThrow('Route has an invalid URL')
 
 	it 'throws an error when the url is undefined', () ->
-		expect(() -> new Router [
+		expect(() -> new Router ko, [
 			{
 				name: 'default'
 			}
 		]).toThrow('Route has an invalid URL')
 
 	it 'throws an error when the url is an empty string', () ->
-		expect(() -> new Router [
+		expect(() -> new Router ko, [
 			{
 				name: 'default'
 				url: ''
@@ -154,7 +154,7 @@ describe 'Router loading routes', () ->
 		]).toThrow('Route has an invalid URL')
 
 	it 'throws an error when trying to add multiple routes with the same name', () ->
-		expect(() -> new Router [
+		expect(() -> new Router ko, [
 			{
 				name: 'default'
 				url: '/'
@@ -166,7 +166,7 @@ describe 'Router loading routes', () ->
 		]).toThrow('Route clashes with existing route')
 
 	it 'throws an error when trying to add multiple routes with the same URL pattern', () ->
-		expect(() -> new Router [
+		expect(() -> new Router ko, [
 			{
 				name: 'first'
 				url: '/'

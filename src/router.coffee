@@ -3,7 +3,8 @@ class Router
 		invalidRoute: 'Invalid route'
 		duplicateRoute: 'Route clashes with existing route'
 
-	constructor: (routes) ->
+	constructor: (ko, routes) ->
+		@ko = ko
 		@routes = []
 		@add routes if routes
 
@@ -16,7 +17,7 @@ class Router
 			r = new Route route
 
 			throw @errors.duplicateRoute if @routes.filter((i) -> r.clashesWith i).length
-			ko.components.register r.component, route.component if route.component
+			@ko.components.register r.component, route.component if route.component
 
 			@routes.push r
 

@@ -2,7 +2,7 @@ describe 'Router matching url to route', () ->
 	router = null
 
 	beforeAll () ->
-		router = new Router [
+		router = new Router ko, [
 			{
 				name: 'default'
 				url: '/'
