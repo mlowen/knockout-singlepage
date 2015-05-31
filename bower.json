@@ -7,7 +7,8 @@
   "description": "A single page application extension for Knockout.",
   "main": "dist/knockout-singlepage.js",
   "moduleType": [
-    "globals"
+    "globals",
+    "amd"
   ],
   "keywords": [
     "knockout",
@@ -21,7 +22,6 @@
     "**/.*",
     "**/*.coffee",
     "package.json",
-
     "node_modules",
     "bower_components",
     "test",

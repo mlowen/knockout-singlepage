@@ -1,6 +1,7 @@
 module.exports = (grunt) ->
 	knockoutFile = 'bower_components/knockout/dist/knockout.js'
 	debugFile = 'dist/<%= pkg.name %>-debug.js'
+	banner = '/*!\n * <%= pkg.name %> <%= pkg.version %>\n * (c) <%= pkg.author %> - <%= pkg.homepage %>\n * License: <%= pkg.license %>\n */\n';
 
 	demoDependencies = [
 		knockoutFile
@@ -42,6 +43,8 @@ module.exports = (grunt) ->
 					specs: 'tests/**/*.js'
 					vendor: [ knockoutFile ]
 		concat:
+			options:
+				banner: banner
 			dist:
 				src: [
 					'src/fragments/prefix.js'
@@ -54,6 +57,8 @@ module.exports = (grunt) ->
 				dest: debugFile
 		uglify:
 			dist:
+				options:
+					banner: banner
 				files:
 					'dist/<%= pkg.name %>.js': debugFile
 		watch:

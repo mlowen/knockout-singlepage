@@ -1,3 +1,8 @@
+/*!
+ * knockout-singlepage 0.1.0-alpha
+ * (c) Michael Lowen - https://github.com/mlowen/knockout-singlepage
+ * License: MIT
+ */
 (function() {
 
 var urlQueryParser;
