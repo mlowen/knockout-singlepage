@@ -6,3 +6,4 @@ build
 tests/**/*.js
 demo/**/*.js
 _SpecRunner.html
+knockout-singlepage-*.zip

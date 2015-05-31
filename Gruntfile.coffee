@@ -1,7 +1,7 @@
 module.exports = (grunt) ->
 	knockoutFile = 'bower_components/knockout/dist/knockout.js'
 	debugFile = 'dist/<%= pkg.name %>-debug.js'
-	banner = '/*!\n * <%= pkg.name %> <%= pkg.version %>\n * (c) <%= pkg.author %> - <%= pkg.homepage %>\n * License: <%= pkg.license %>\n */\n';
+	banner = '/*!\n * <%= pkg.name %> <%= pkg.version %>\n * (c) <%= pkg.author %> - <%= pkg.homepage %>\n * License: <%= pkg.license.type %> (<%= pkg.license.url %>)\n */\n';
 
 	demoDependencies = [
 		knockoutFile
@@ -70,6 +70,19 @@ module.exports = (grunt) ->
 				files: [ { expand: true, flatten: true, src: demoDependencies, dest: 'demo/amd/scripts/' } ]
 			traditionalDemo:
 				files: [ { expand: true, flatten: true, src: demoDependencies, dest: 'demo/traditional/scripts/' } ]
+		compress:
+			main:
+				options:
+					archive: '<%= pkg.name %>-<%= pkg.version %>.zip'
+				files: [
+					{ src: [ 'README.md', 'LICENSE' ] }
+					{
+						cwd: 'dist'
+						src: [ '*.js' ]
+						dest: '<%= pkg.name %>/'
+						expand: true
+					}
+				]
 
 	grunt.loadNpmTasks 'grunt-contrib-coffee'
 	grunt.loadNpmTasks 'grunt-contrib-concat'
@@ -78,6 +91,8 @@ module.exports = (grunt) ->
 	grunt.loadNpmTasks 'grunt-contrib-jasmine'
 	grunt.loadNpmTasks 'grunt-contrib-clean'
 	grunt.loadNpmTasks 'grunt-contrib-copy'
+	grunt.loadNpmTasks 'grunt-contrib-compress'
 
 	grunt.registerTask 'test', [ 'clean', 'coffee', 'jasmine' ]
 	grunt.registerTask 'default', [ 'test', 'concat', 'uglify', 'copy' ]
+	grunt.registerTask 'package', [ 'default', 'compress' ]
