@@ -1,5 +1,5 @@
 /*!
- * knockout-singlepage 0.1.0-alpha
+ * knockout-singlepage 0.2.0-alpha
  * (c) Michael Lowen - https://github.com/mlowen/knockout-singlepage
  * License: MIT (http://opensource.org/licenses/mit-license.php)
  */
@@ -200,10 +200,15 @@ initialise = function(ko) {
       element.setAttribute('data-bind', 'component: { name: component(), params: { params: parameters(), hash: hash(), query: query() } }');
       document.body.addEventListener('click', (function(_this) {
         return function(e) {
-          if (e.target.tagName.toLowerCase() === 'a' && e.target.href.slice(0, _this.baseUrl.length) === _this.baseUrl) {
-            _this.go(e.target.href.slice(_this.baseUrl.length));
-            e.stopPropagation();
-            return e.preventDefault();
+          var isBaseUrl, isLeftButton;
+          if (e.target.tagName.toLowerCase() === 'a') {
+            isLeftButton = (e.which || evt.button) === 1;
+            isBaseUrl = e.target.href.slice(0, _this.baseUrl.length) === _this.baseUrl;
+            if (isLeftButton && isBaseUrl) {
+              _this.go(e.target.href.slice(_this.baseUrl.length));
+              e.stopPropagation();
+              return e.preventDefault();
+            }
           }
         };
       })(this), false);

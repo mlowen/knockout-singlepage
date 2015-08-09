@@ -19,11 +19,16 @@ initialise = (ko) ->
 			element.setAttribute 'data-bind', 'component: { name: component(), params: { params: parameters(), hash: hash(), query: query() } }'
 
 			document.body.addEventListener 'click', (e) =>
-				if e.target.tagName.toLowerCase() == 'a' && e.target.href[... @baseUrl.length] is @baseUrl
-					@go e.target.href[@baseUrl.length ...]
 
-					e.stopPropagation()
-					e.preventDefault()
+				if e.target.tagName.toLowerCase() == 'a'
+					isLeftButton = (e.which || evt.button) == 1
+					isBaseUrl = e.target.href[... @baseUrl.length] is @baseUrl
+
+					if isLeftButton && isBaseUrl
+						@go e.target.href[@baseUrl.length ...]
+
+						e.stopPropagation()
+						e.preventDefault()
 			, false
 
 			ko.applyBindings @viewModel
