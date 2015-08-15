@@ -180,6 +180,7 @@ initialise = function(ko) {
     function KnockoutSinglePageExtension() {
       this.router = null;
       this.baseUrl = location.protocol + '//' + location.host;
+      this.notFoundComponent = 'ko-singlepage-notfound';
       this.viewModel = {
         component: ko.observable(null),
         parameters: ko.observable(null),
@@ -192,6 +193,9 @@ initialise = function(ko) {
       if (this.router) {
         throw 'Router has already been initialised';
       }
+      ko.components.register(this.notFoundComponent, {
+        template: 'This page does not exist'
+      });
       this.router = new Router(ko, routes);
       this.go(location.pathname);
       if (!element) {
@@ -222,13 +226,18 @@ initialise = function(ko) {
       }
       route = this.router.get(url);
       if (route) {
-        history.pushState(null, null, url);
         queryData = urlQueryParser(url);
         this.viewModel.hash(queryData.hash);
         this.viewModel.query(queryData.query);
         this.viewModel.parameters(route.parameters);
-        return this.viewModel.component(route.component);
+        this.viewModel.component(route.component);
+      } else {
+        this.viewModel.hash(null);
+        this.viewModel.query(null);
+        this.viewModel.parameters(null);
+        this.viewModel.component(this.notFoundComponent);
       }
+      return history.pushState(null, null, url);
     };
 
     return KnockoutSinglePageExtension;

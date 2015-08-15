@@ -3,6 +3,7 @@ initialise = (ko) ->
 		constructor: () ->
 			@router = null
 			@baseUrl = location.protocol + '//' + location.host
+			@notFoundComponent = 'ko-singlepage-notfound'
 			@viewModel =
 				component: ko.observable null
 				parameters: ko.observable null
@@ -11,6 +12,9 @@ initialise = (ko) ->
 
 		init: (routes, element) ->
 			throw 'Router has already been initialised' if @router
+
+			# Register default 404 component
+			ko.components.register @notFoundComponent, template: 'This page does not exist'
 
 			@router = new Router ko, routes
 			@go location.pathname
@@ -39,12 +43,18 @@ initialise = (ko) ->
 			route = @router.get url
 
 			if route
-				history.pushState null, null, url
 				queryData = urlQueryParser url
 
 				@viewModel.hash queryData.hash
 				@viewModel.query queryData.query
 				@viewModel.parameters route.parameters
 				@viewModel.component route.component
+			else
+				@viewModel.hash null
+				@viewModel.query null
+				@viewModel.parameters null
+				@viewModel.component @notFoundComponent
+
+			history.pushState null, null, url
 
 	ko.singlePage = new KnockoutSinglePageExtension() unless ko.singlePage

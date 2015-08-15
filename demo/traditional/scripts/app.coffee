@@ -15,6 +15,7 @@ $ () ->
 							<a href="/second/1" class="btn btn-primary btn-block pull-right" data-bind="attr: { href: \'/second/\' + input() }, visible: valid">Go to next page</a>
 						</div>
 					</div>
+					<a href="/random">Go to non-existant route</a>
 				'
 		}
 		{
@@ -28,5 +29,5 @@ $ () ->
 				'
 		}
 	]
-	
+
 	ko.singlePage.init routes, document.getElementById('app')
