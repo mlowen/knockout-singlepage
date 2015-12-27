@@ -23,16 +23,25 @@ initialise = (ko) ->
 			element.setAttribute 'data-bind', 'component: { name: component(), params: { params: parameters(), hash: hash(), query: query() } }'
 
 			document.body.addEventListener 'click', (e) =>
+				if e.target.tagName.toLowerCase() == 'a' and triggerClick
+					# This feels hacky but it works, as best as I can tell there
+					# is no way to programmatically determine if there is a
+					# particular knockout binding on an element.
+					hasClickBinding = e.target.dataset.bind.split(',').reduce((
+						(initial, current) ->
+							(current.split(':')[0].trim().toLowerCase() is 'click') or initial
+					), false) if e.target.dataset.bind
 
-				if e.target.tagName.toLowerCase() == 'a'
 					isLeftButton = (e.which || evt.button) == 1
 					isBaseUrl = e.target.href[... @baseUrl.length] is @baseUrl
 
-					if isLeftButton && isBaseUrl
+					if isLeftButton and isBaseUrl and not hasClickBinding
 						@go e.target.href[@baseUrl.length ...]
 
 						e.stopPropagation()
 						e.preventDefault()
+
+				triggerClick = true
 			, false
 
 			ko.applyBindings @viewModel

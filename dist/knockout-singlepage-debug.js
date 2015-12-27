@@ -204,16 +204,22 @@ initialise = function(ko) {
       element.setAttribute('data-bind', 'component: { name: component(), params: { params: parameters(), hash: hash(), query: query() } }');
       document.body.addEventListener('click', (function(_this) {
         return function(e) {
-          var isBaseUrl, isLeftButton;
-          if (e.target.tagName.toLowerCase() === 'a') {
+          var hasClickBinding, isBaseUrl, isLeftButton, triggerClick;
+          if (e.target.tagName.toLowerCase() === 'a' && triggerClick) {
+            if (e.target.dataset.bind) {
+              hasClickBinding = e.target.dataset.bind.split(',').reduce((function(initial, current) {
+                return (current.split(':')[0].trim().toLowerCase() === 'click') || initial;
+              }), false);
+            }
             isLeftButton = (e.which || evt.button) === 1;
             isBaseUrl = e.target.href.slice(0, _this.baseUrl.length) === _this.baseUrl;
-            if (isLeftButton && isBaseUrl) {
+            if (isLeftButton && isBaseUrl && !hasClickBinding) {
               _this.go(e.target.href.slice(_this.baseUrl.length));
               e.stopPropagation();
-              return e.preventDefault();
+              e.preventDefault();
             }
           }
+          return triggerClick = true;
         };
       })(this), false);
       return ko.applyBindings(this.viewModel);
