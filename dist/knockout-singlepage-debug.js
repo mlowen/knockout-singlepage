@@ -197,15 +197,15 @@ initialise = function(ko) {
         template: 'This page does not exist'
       });
       this.router = new Router(ko, routes);
-      this.go(location.pathname);
+      this.go(location.href.slice(this.baseUrl.length));
       if (!element) {
         element = document.body;
       }
-      element.setAttribute('data-bind', 'component: { name: component(), params: { params: parameters(), hash: hash(), query: query() } }');
+      element.dataset.bind = 'component: { name: component(), params: { params: parameters(), hash: hash(), query: query() } }';
       document.body.addEventListener('click', (function(_this) {
         return function(e) {
-          var hasClickBinding, isBaseUrl, isLeftButton, triggerClick;
-          if (e.target.tagName.toLowerCase() === 'a' && triggerClick) {
+          var hasClickBinding, isBaseUrl, isLeftButton;
+          if (e.target.tagName.toLowerCase() === 'a') {
             if (e.target.dataset.bind) {
               hasClickBinding = e.target.dataset.bind.split(',').reduce((function(initial, current) {
                 return (current.split(':')[0].trim().toLowerCase() === 'click') || initial;
@@ -216,12 +216,16 @@ initialise = function(ko) {
             if (isLeftButton && isBaseUrl && !hasClickBinding) {
               _this.go(e.target.href.slice(_this.baseUrl.length));
               e.stopPropagation();
-              e.preventDefault();
+              return e.preventDefault();
             }
           }
-          return triggerClick = true;
         };
       })(this), false);
+      window.onpopstate = (function(_this) {
+        return function(e) {
+          return _this.go(location.href.slice(_this.baseUrl.length));
+        };
+      })(this);
       return ko.applyBindings(this.viewModel);
     };
 

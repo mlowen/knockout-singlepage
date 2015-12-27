@@ -17,13 +17,13 @@ initialise = (ko) ->
 			ko.components.register @notFoundComponent, template: 'This page does not exist'
 
 			@router = new Router ko, routes
-			@go location.pathname
+			@go location.href[@baseUrl.length ...]
 
 			element = document.body unless element
-			element.setAttribute 'data-bind', 'component: { name: component(), params: { params: parameters(), hash: hash(), query: query() } }'
+			element.dataset.bind = 'component: { name: component(), params: { params: parameters(), hash: hash(), query: query() } }'
 
 			document.body.addEventListener 'click', (e) =>
-				if e.target.tagName.toLowerCase() == 'a' and triggerClick
+				if e.target.tagName.toLowerCase() == 'a'
 					# This feels hacky but it works, as best as I can tell there
 					# is no way to programmatically determine if there is a
 					# particular knockout binding on an element.
@@ -40,9 +40,9 @@ initialise = (ko) ->
 
 						e.stopPropagation()
 						e.preventDefault()
-
-				triggerClick = true
 			, false
+
+			window.onpopstate = (e) => @go location.href[@baseUrl.length ...]
 
 			ko.applyBindings @viewModel
 
