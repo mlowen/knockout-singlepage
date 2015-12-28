@@ -204,7 +204,7 @@ initialise = function(ko) {
       element.dataset.bind = 'component: { name: component(), params: { params: parameters(), hash: hash(), query: query() } }';
       document.body.addEventListener('click', (function(_this) {
         return function(e) {
-          var hasClickBinding, isBaseUrl, isLeftButton;
+          var hasClickBinding, isBaseUrl, isLeftButton, url;
           if (e.target.tagName.toLowerCase() === 'a') {
             if (e.target.dataset.bind) {
               hasClickBinding = e.target.dataset.bind.split(',').reduce((function(initial, current) {
@@ -214,9 +214,17 @@ initialise = function(ko) {
             isLeftButton = (e.which || evt.button) === 1;
             isBaseUrl = e.target.href.slice(0, _this.baseUrl.length) === _this.baseUrl;
             if (isLeftButton && isBaseUrl && !hasClickBinding) {
-              _this.go(e.target.href.slice(_this.baseUrl.length));
-              e.stopPropagation();
-              return e.preventDefault();
+              url = {
+                href: e.target.href.slice(_this.baseUrl.length)
+              };
+              if (e.target.dataset.route != null) {
+                url.route = e.target.dataset.route.toLowerCase();
+              }
+              if (url.route !== 'none') {
+                _this.go(url);
+                e.stopPropagation();
+                return e.preventDefault();
+              }
             }
           }
         };
@@ -234,20 +242,27 @@ initialise = function(ko) {
       if (!this.router) {
         throw 'Router has not been initialised';
       }
-      route = this.router.get(url);
-      if (route) {
-        queryData = urlQueryParser(url);
-        this.viewModel.hash(queryData.hash);
-        this.viewModel.query(queryData.query);
-        this.viewModel.parameters(route.parameters);
-        this.viewModel.component(route.component);
-      } else {
-        this.viewModel.hash(null);
-        this.viewModel.query(null);
-        this.viewModel.parameters(null);
-        this.viewModel.component(this.notFoundComponent);
+      if (typeof url !== 'object') {
+        url = {
+          href: url
+        };
       }
-      return history.pushState(null, null, url);
+      if (url.route !== 'url-only') {
+        route = this.router.get(url.href);
+        if (route) {
+          queryData = urlQueryParser(url.href);
+          this.viewModel.hash(queryData.hash);
+          this.viewModel.query(queryData.query);
+          this.viewModel.parameters(route.parameters);
+          this.viewModel.component(route.component);
+        } else {
+          this.viewModel.hash(null);
+          this.viewModel.query(null);
+          this.viewModel.parameters(null);
+          this.viewModel.component(this.notFoundComponent);
+        }
+      }
+      return history.pushState(null, null, url.href);
     };
 
     return KnockoutSinglePageExtension;
