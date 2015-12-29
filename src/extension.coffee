@@ -17,44 +17,60 @@ initialise = (ko) ->
 			ko.components.register @notFoundComponent, template: 'This page does not exist'
 
 			@router = new Router ko, routes
-			@go location.pathname
+			@go location.href[@baseUrl.length ...]
 
 			element = document.body unless element
-			element.setAttribute 'data-bind', 'component: { name: component(), params: { params: parameters(), hash: hash(), query: query() } }'
+			element.dataset.bind = 'component: { name: component(), params: { params: parameters(), hash: hash(), query: query() } }'
 
 			document.body.addEventListener 'click', (e) =>
-
 				if e.target.tagName.toLowerCase() == 'a'
+					# This feels hacky but it works, as best as I can tell there
+					# is no way to programmatically determine if there is a
+					# particular knockout binding on an element.
+					hasClickBinding = e.target.dataset.bind.split(',').reduce((
+						(initial, current) ->
+							(current.split(':')[0].trim().toLowerCase() is 'click') or initial
+					), false) if e.target.dataset.bind
+
 					isLeftButton = (e.which || evt.button) == 1
 					isBaseUrl = e.target.href[... @baseUrl.length] is @baseUrl
 
-					if isLeftButton && isBaseUrl
-						@go e.target.href[@baseUrl.length ...]
+					if isLeftButton and isBaseUrl and not hasClickBinding
+						url = { href: e.target.href[@baseUrl.length ...] }
+						url.route = e.target.dataset.route.toLowerCase() if e.target.dataset.route?
 
-						e.stopPropagation()
-						e.preventDefault()
+						if url.route isnt 'none'
+							@go url
+
+							e.stopPropagation()
+							e.preventDefault()
 			, false
+
+			window.onpopstate = (e) => @go location.href[@baseUrl.length ...]
 
 			ko.applyBindings @viewModel
 
 		go: (url) ->
 			throw 'Router has not been initialised' unless @router
 
-			route = @router.get url
+			url = { href: url } unless typeof url is 'object'
 
-			if route
-				queryData = urlQueryParser url
+			if url.route isnt 'url-only'
+				route = @router.get url.href
 
-				@viewModel.hash queryData.hash
-				@viewModel.query queryData.query
-				@viewModel.parameters route.parameters
-				@viewModel.component route.component
-			else
-				@viewModel.hash null
-				@viewModel.query null
-				@viewModel.parameters null
-				@viewModel.component @notFoundComponent
+				if route
+					queryData = urlQueryParser url.href
 
-			history.pushState null, null, url
+					@viewModel.hash queryData.hash
+					@viewModel.query queryData.query
+					@viewModel.parameters route.parameters
+					@viewModel.component route.component
+				else
+					@viewModel.hash null
+					@viewModel.query null
+					@viewModel.parameters null
+					@viewModel.component @notFoundComponent
+
+			history.pushState null, null, url.href
 
 	ko.singlePage = new KnockoutSinglePageExtension() unless ko.singlePage

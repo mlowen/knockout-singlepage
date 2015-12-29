@@ -26,7 +26,7 @@ If you [clone the repository](https://github.com/mlowen/knockout-singlepage) loc
 
 The dependencies for using the compiled version of Knockout-SinglePage are:
 
-* [Knockout](http://knockoutjs.com/) - tested with v3.3.0
+* [Knockout](http://knockoutjs.com/) - v3.4.0
 
 ### Optional
 
@@ -92,6 +92,30 @@ This will use the current URL to load the appropriate component into the element
 ```js
 ko.singlePage.go('/another-route');
 ```
+
+The `go` method will also accept an object as a parameter which is expected to be structured like the following:
+
+```js
+{
+	href: '/another-route',
+	route: 'url-only'
+}
+```
+
+The `href` value must be supplied whereas the `route` value is optional. When the `route` value is supplied it can modify the behaviour of Knockout-SinglePage, the accepted values for this field are:
+
+* `url-only` - Only the browser URL will be updated, Knockout-SinglePage will not attempt to match this to a component.
+
+This behaviour can also be replicated within the view by using the `data-route` attribute as follows:
+
+```html
+<a href="/another-route" data-route="url-only">Link Text</a>
+```
+
+The values which are accepted for the `data-route` attribute are:
+
+* `url-only` - Behaves the same as the `go` method only updating the browser URL.
+* `none` - When this is supplied Knockout-SinglePage will ignore the link when it is clicked and leave the browser to handle it.
 
 ### Defining component with the route
 

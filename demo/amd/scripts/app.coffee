@@ -11,5 +11,4 @@ require [
 		'/scripts/routes.js'
 		'knockout.singlepage'
 	], (ko, routes) ->
-
 		ko.singlePage.init routes, document.getElementById('app')
