@@ -6,12 +6,18 @@ A [single page application](http://en.wikipedia.org/wiki/Single-page_application
 
 ## Getting
 
-### Bower
+You can get Knockout-Singlepage via the package managers [npm](https://www.npmjs.com/) or [bower](http://bower.io/) otherwise you can download the latest from Github.
 
-The preferred method of getting Knockout-Singlepage is via [bower](http://bower.io/) where you can run the following:
+### Bower
 
 ```
 bower install knockout-singlepage
+```
+
+### npm
+
+```
+npm install knockout-singlepage
 ```
 
 ### Latest release
