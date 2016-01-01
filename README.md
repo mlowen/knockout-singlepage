@@ -170,6 +170,25 @@ Knockout-SinglePage emits the event `ko-sp-route-changed` event when the URL cha
 * `off(event, callback)` Will remove the binding to the event.
 * `offRouteChanged(callback)` This is the equivalent of calling the `off` method with `'ko-sp-route-changed'` in as the event.
 
+When the `ko-sp-route-changed` event is triggered the Knockout-SinglePage specific information can be found in the detail property of the event. The data supplied is the URL, the component being displayed and the route context. The structure of the data will look like the following:
+
+```js
+{
+	detail: {
+		url: '/foo/1#bar?tar=2&baz=3&tar=4',
+		component: 'foo-component',
+		context: {
+			params: { id: 1 },
+			hash: 'bar',
+			query: {
+				tar: [ 2, 4 ],
+				baz: 3
+			}
+		}
+	}
+}
+```
+
 ### Accessing the underlying element
 
 Once Knockout-SinglePage has been initialised the element that it has been bound is accessible via the `element` property.

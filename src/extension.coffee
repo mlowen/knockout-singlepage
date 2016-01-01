@@ -89,6 +89,10 @@ initialise = (ko) ->
 					detail:
 						url: url.href,
 						component: @viewModel.component()
+						context:
+							hash: @viewModel.hash()
+							query: @viewModel.query()
+							parameters: @viewModel.parameters()
 				}
 
 			history.pushState null, null, url.href

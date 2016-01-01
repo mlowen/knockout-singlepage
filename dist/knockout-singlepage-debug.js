@@ -278,7 +278,12 @@ initialise = function(ko) {
         this.element.dispatchEvent(new CustomEvent(this.events.routeChanged, {
           detail: {
             url: url.href,
-            component: this.viewModel.component()
+            component: this.viewModel.component(),
+            context: {
+              hash: this.viewModel.hash(),
+              query: this.viewModel.query(),
+              parameters: this.viewModel.parameters()
+            }
           }
         }));
       }
