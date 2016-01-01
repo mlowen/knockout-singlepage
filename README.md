@@ -6,12 +6,18 @@ A [single page application](http://en.wikipedia.org/wiki/Single-page_application
 
 ## Getting
 
-### Bower
+You can get Knockout-Singlepage via the package managers [npm](https://www.npmjs.com/) or [bower](http://bower.io/) otherwise you can download the latest from Github.
 
-The preferred method of getting Knockout-Singlepage is via [bower](http://bower.io/) where you can run the following:
+### Bower
 
 ```
 bower install knockout-singlepage
+```
+
+### npm
+
+```
+npm install knockout-singlepage
 ```
 
 ### Latest release
@@ -26,7 +32,7 @@ If you [clone the repository](https://github.com/mlowen/knockout-singlepage) loc
 
 The dependencies for using the compiled version of Knockout-SinglePage are:
 
-* [Knockout](http://knockoutjs.com/) - tested with v3.3.0
+* [Knockout](http://knockoutjs.com/) - v3.4.0
 
 ### Optional
 
@@ -93,6 +99,30 @@ This will use the current URL to load the appropriate component into the element
 ko.singlePage.go('/another-route');
 ```
 
+The `go` method will also accept an object as a parameter which is expected to be structured like the following:
+
+```js
+{
+	href: '/another-route',
+	route: 'url-only'
+}
+```
+
+The `href` value must be supplied whereas the `route` value is optional. When the `route` value is supplied it can modify the behaviour of Knockout-SinglePage, the accepted values for this field are:
+
+* `url-only` - Only the browser URL will be updated, Knockout-SinglePage will not attempt to match this to a component.
+
+This behaviour can also be replicated within the view by using the `data-route` attribute as follows:
+
+```html
+<a href="/another-route" data-route="url-only">Link Text</a>
+```
+
+The values which are accepted for the `data-route` attribute are:
+
+* `url-only` - Behaves the same as the `go` method only updating the browser URL.
+* `none` - When this is supplied Knockout-SinglePage will ignore the link when it is clicked and leave the browser to handle it.
+
 ### Defining component with the route
 
 As previously mentioned the name of a route must match a registered component, if wanted you can use the route definition to also define the component. This is done with the `component` field which acts in the same manner as the object passed in as the second parameter to [`ko.components.register`](http://knockoutjs.com/documentation/component-registration.html), Knockout-SinglePage uses the name of the route as the first argument to that method. The route definitions in turn look like:
@@ -130,6 +160,56 @@ And add these to an object that is passed to the view model of the component usi
 	}
 }
 ```
+
+### Events
+
+Knockout-SinglePage emits the event `ko-sp-route-changed` event when the URL changes and a new component is loaded. It is important to note that if the `go` method is called with the 'url-only' option or the `data-route` attribute is used with the 'none' or 'url-only' options then the event will not be triggered. The event is dispatched from the element that Knockout-SinglePage has been bound to, an event handler can either be bound to that element or use the helper methods provided by Knockout-SinglePage.
+
+* `on(event, callback)` Will bind the callback to event.
+* `onRouteChanged(callback)` This is the equivalent of calling the `on` method with `'ko-sp-route-changed'` in as the event.
+* `off(event, callback)` Will remove the binding to the event.
+* `offRouteChanged(callback)` This is the equivalent of calling the `off` method with `'ko-sp-route-changed'` in as the event.
+
+When the `ko-sp-route-changed` event is triggered the Knockout-SinglePage specific information can be found in the detail property of the event. The data supplied is the URL, the component being displayed and the route context. The structure of the data will look like the following:
+
+```js
+{
+	detail: {
+		url: '/foo/1#bar?tar=2&baz=3&tar=4',
+		component: 'foo-component',
+		context: {
+			params: { id: 1 },
+			hash: 'bar',
+			query: {
+				tar: [ 2, 4 ],
+				baz: 3
+			}
+		}
+	}
+}
+```
+
+### Accessing the underlying element
+
+Once Knockout-SinglePage has been initialised the element that it has been bound is accessible via the `element` property.
+
+### Initialising with an object
+
+In the scenario where Knockout-SinglePage is initialised and you want to handle the `ko-sp-route-changed` event if you use the `init` method as described above then the code will not miss receiving the event emitted on the initial component load. The `init` method also accepts the passing in of an object as an argument which will allow you to bind events before the initial component is loaded. The equivalent of the previous example with event binding would be as follows:
+
+```js
+ko.singlePage.init({
+	routes: routes,
+	element: document.getElementById('app'),
+	on: {
+		routeChanged: function(e) {
+			console.log(e);
+		}
+	}
+});
+```
+
+Note that in the scenario where the first argument passed in is an object all other arguments are ignored.
 
 ### Loading via AMD
 
@@ -193,7 +273,7 @@ Knockout-SinglePage has [continuous integration set up at Travis](https://travis
 
 Knockout-SinglePage is available under the MIT license which is as follows:
 
-Copyright &copy; 2015 Michael Lowen
+Copyright &copy; 2016 Michael Lowen
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 

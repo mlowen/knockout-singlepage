@@ -15,6 +15,12 @@ $ () ->
 							<a href="/second/1" class="btn btn-primary btn-block pull-right" data-bind="attr: { href: \'/second/\' + input() }, visible: valid">Go to next page</a>
 						</div>
 					</div>
+					<ul>
+						<li><a href="/random">Go to non-existant route</a></li>
+						<li><a href="#" data-bind="click: onClick">This should print to the console</a></li>
+						<li><a href="/new-url" data-route="url-only">Link which only updates the URL</a></li>
+						<li><a href="/ignored-url" data-route="none">Link which is ignored by the framework</a></li>
+					</ul>
 				'
 		}
 		{
@@ -28,5 +34,8 @@ $ () ->
 				'
 		}
 	]
-	
+
 	ko.singlePage.init routes, document.getElementById('app')
+	ko.singlePage.onRouteChanged (e) ->
+		console.log 'Route has changed.'
+		console.log e

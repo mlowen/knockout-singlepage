@@ -1,5 +1,5 @@
 /*!
- * knockout-singlepage 0.1.0-alpha
+ * knockout-singlepage 0.2.0-alpha
  * (c) Michael Lowen - https://github.com/mlowen/knockout-singlepage
  * License: MIT (http://opensource.org/licenses/mit-license.php)
  */
@@ -180,33 +180,74 @@ initialise = function(ko) {
     function KnockoutSinglePageExtension() {
       this.router = null;
       this.baseUrl = location.protocol + '//' + location.host;
+      this.notFoundComponent = 'ko-singlepage-notfound';
       this.viewModel = {
         component: ko.observable(null),
         parameters: ko.observable(null),
         hash: ko.observable(null),
         query: ko.observable(null)
       };
+      this.events = {
+        routeChanged: 'ko-sp-route-changed'
+      };
     }
 
     KnockoutSinglePageExtension.prototype.init = function(routes, element) {
+      var params;
       if (this.router) {
         throw 'Router has already been initialised';
       }
-      this.router = new Router(ko, routes);
-      this.go(location.pathname);
-      if (!element) {
-        element = document.body;
+      params = routes;
+      if (Array.isArray(routes)) {
+        params = {
+          routes: routes,
+          element: element
+        };
       }
-      element.setAttribute('data-bind', 'component: { name: component(), params: { params: parameters(), hash: hash(), query: query() } }');
+      ko.components.register(this.notFoundComponent, {
+        template: 'This page does not exist'
+      });
+      this.router = new Router(ko, params.routes);
+      this.element = params.element != null ? params.element : document.body;
+      this.element.dataset.bind = 'component: { name: component(), params: { params: parameters(), hash: hash(), query: query() } }';
       document.body.addEventListener('click', (function(_this) {
         return function(e) {
-          if (e.target.tagName.toLowerCase() === 'a' && e.target.href.slice(0, _this.baseUrl.length) === _this.baseUrl) {
-            _this.go(e.target.href.slice(_this.baseUrl.length));
-            e.stopPropagation();
-            return e.preventDefault();
+          var hasClickBinding, isBaseUrl, isLeftButton, url;
+          if (e.target.tagName.toLowerCase() === 'a') {
+            if (e.target.dataset.bind) {
+              hasClickBinding = e.target.dataset.bind.split(',').reduce((function(initial, current) {
+                return (current.split(':')[0].trim().toLowerCase() === 'click') || initial;
+              }), false);
+            }
+            isLeftButton = (e.which || evt.button) === 1;
+            isBaseUrl = e.target.href.slice(0, _this.baseUrl.length) === _this.baseUrl;
+            if (isLeftButton && isBaseUrl && !hasClickBinding) {
+              url = {
+                href: e.target.href.slice(_this.baseUrl.length)
+              };
+              if (e.target.dataset.route != null) {
+                url.route = e.target.dataset.route.toLowerCase();
+              }
+              if (url.route !== 'none') {
+                _this.go(url);
+                e.stopPropagation();
+                return e.preventDefault();
+              }
+            }
           }
         };
       })(this), false);
+      window.onpopstate = (function(_this) {
+        return function(e) {
+          return _this.go(location.href.slice(_this.baseUrl.length));
+        };
+      })(this);
+      if (params.on != null) {
+        if (params.on.routeChanged != null) {
+          this.onRouteChanged(params.on.routeChanged);
+        }
+      }
+      this.go(location.href.slice(this.baseUrl.length));
       return ko.applyBindings(this.viewModel);
     };
 
@@ -215,15 +256,54 @@ initialise = function(ko) {
       if (!this.router) {
         throw 'Router has not been initialised';
       }
-      route = this.router.get(url);
-      if (route) {
-        history.pushState(null, null, url);
-        queryData = urlQueryParser(url);
-        this.viewModel.hash(queryData.hash);
-        this.viewModel.query(queryData.query);
-        this.viewModel.parameters(route.parameters);
-        return this.viewModel.component(route.component);
+      if (typeof url !== 'object') {
+        url = {
+          href: url
+        };
       }
+      if (url.route !== 'url-only') {
+        route = this.router.get(url.href);
+        if (route) {
+          queryData = urlQueryParser(url.href);
+          this.viewModel.hash(queryData.hash);
+          this.viewModel.query(queryData.query);
+          this.viewModel.parameters(route.parameters);
+          this.viewModel.component(route.component);
+        } else {
+          this.viewModel.hash(null);
+          this.viewModel.query(null);
+          this.viewModel.parameters(null);
+          this.viewModel.component(this.notFoundComponent);
+        }
+        this.element.dispatchEvent(new CustomEvent(this.events.routeChanged, {
+          detail: {
+            url: url.href,
+            component: this.viewModel.component(),
+            context: {
+              hash: this.viewModel.hash(),
+              query: this.viewModel.query(),
+              parameters: this.viewModel.parameters()
+            }
+          }
+        }));
+      }
+      return history.pushState(null, null, url.href);
+    };
+
+    KnockoutSinglePageExtension.prototype.on = function(event, callback) {
+      return this.element.addEventListener(event, callback);
+    };
+
+    KnockoutSinglePageExtension.prototype.onRouteChanged = function(callback) {
+      return this.on(this.events.routeChanged, callback);
+    };
+
+    KnockoutSinglePageExtension.prototype.off = function(event, callback) {
+      return this.element.removeEventListener(event, callback);
+    };
+
+    KnockoutSinglePageExtension.prototype.offRouteChanged = function(callback) {
+      return this.off(this.events.routeChanged, callback);
     };
 
     return KnockoutSinglePageExtension;

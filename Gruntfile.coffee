@@ -1,12 +1,6 @@
 module.exports = (grunt) ->
-	knockoutFile = 'bower_components/knockout/dist/knockout.js'
 	debugFile = 'dist/<%= pkg.name %>-debug.js'
 	banner = '/*!\n * <%= pkg.name %> <%= pkg.version %>\n * (c) <%= pkg.author %> - <%= pkg.homepage %>\n * License: <%= pkg.license.type %> (<%= pkg.license.url %>)\n */\n';
-
-	demoDependencies = [
-		knockoutFile
-		debugFile
-	]
 
 	grunt.initConfig
 		pkg: grunt.file.readJSON 'package.json'
@@ -41,7 +35,7 @@ module.exports = (grunt) ->
 				src: 'build/**/*.js'
 				options:
 					specs: 'tests/**/*.js'
-					vendor: [ knockoutFile ]
+					vendor: [ 'bower_components/knockout/dist/knockout.js' ]
 		concat:
 			options:
 				banner: banner
@@ -67,9 +61,9 @@ module.exports = (grunt) ->
 				tasks: [ 'default' ]
 		copy:
 			amdDemo:
-				files: [ { expand: true, flatten: true, src: demoDependencies, dest: 'demo/amd/scripts/' } ]
+				files: [ { expand: true, flatten: true, src: debugFile, dest: 'demo/amd/scripts/' } ]
 			traditionalDemo:
-				files: [ { expand: true, flatten: true, src: demoDependencies, dest: 'demo/traditional/scripts/' } ]
+				files: [ { expand: true, flatten: true, src: debugFile, dest: 'demo/traditional/scripts/' } ]
 		compress:
 			main:
 				options:
