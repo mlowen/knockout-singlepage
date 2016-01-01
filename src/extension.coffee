@@ -9,18 +9,26 @@ initialise = (ko) ->
 				parameters: ko.observable null
 				hash: ko.observable null
 				query: ko.observable null
+			@events =
+				routeChanged: 'ko-sp-route-changed'
 
 		init: (routes, element) ->
 			throw 'Router has already been initialised' if @router
 
+			params = routes
+
+			if Array.isArray routes
+				params =
+					routes: routes
+					element: element
+
 			# Register default 404 component
 			ko.components.register @notFoundComponent, template: 'This page does not exist'
 
-			@router = new Router ko, routes
-			@go location.href[@baseUrl.length ...]
+			@router = new Router ko, params.routes
 
-			element = document.body unless element
-			element.dataset.bind = 'component: { name: component(), params: { params: parameters(), hash: hash(), query: query() } }'
+			@element = if params.element? then params.element else document.body
+			@element.dataset.bind = 'component: { name: component(), params: { params: parameters(), hash: hash(), query: query() } }'
 
 			document.body.addEventListener 'click', (e) =>
 				if e.target.tagName.toLowerCase() == 'a'
@@ -48,6 +56,12 @@ initialise = (ko) ->
 
 			window.onpopstate = (e) => @go location.href[@baseUrl.length ...]
 
+			# Attach any event handlers
+			if params.on?
+				@onRouteChanged params.on.routeChanged if params.on.routeChanged?
+
+			@go location.href[@baseUrl.length ...]
+
 			ko.applyBindings @viewModel
 
 		go: (url) ->
@@ -71,6 +85,24 @@ initialise = (ko) ->
 					@viewModel.parameters null
 					@viewModel.component @notFoundComponent
 
+				@element.dispatchEvent new CustomEvent @events.routeChanged, {
+					detail:
+						url: url.href,
+						component: @viewModel.component()
+						context:
+							hash: @viewModel.hash()
+							query: @viewModel.query()
+							parameters: @viewModel.parameters()
+				}
+
 			history.pushState null, null, url.href
+
+		# Event Management
+
+		on: (event, callback) -> @element.addEventListener event, callback
+		onRouteChanged: (callback) -> @on @events.routeChanged, callback
+
+		off: (event, callback) -> @element.removeEventListener event, callback
+		offRouteChanged: (callback) -> @off @events.routeChanged, callback
 
 	ko.singlePage = new KnockoutSinglePageExtension() unless ko.singlePage

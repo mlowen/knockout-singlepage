@@ -187,21 +187,29 @@ initialise = function(ko) {
         hash: ko.observable(null),
         query: ko.observable(null)
       };
+      this.events = {
+        routeChanged: 'ko-sp-route-changed'
+      };
     }
 
     KnockoutSinglePageExtension.prototype.init = function(routes, element) {
+      var params;
       if (this.router) {
         throw 'Router has already been initialised';
+      }
+      params = routes;
+      if (Array.isArray(routes)) {
+        params = {
+          routes: routes,
+          element: element
+        };
       }
       ko.components.register(this.notFoundComponent, {
         template: 'This page does not exist'
       });
-      this.router = new Router(ko, routes);
-      this.go(location.href.slice(this.baseUrl.length));
-      if (!element) {
-        element = document.body;
-      }
-      element.dataset.bind = 'component: { name: component(), params: { params: parameters(), hash: hash(), query: query() } }';
+      this.router = new Router(ko, params.routes);
+      this.element = params.element != null ? params.element : document.body;
+      this.element.dataset.bind = 'component: { name: component(), params: { params: parameters(), hash: hash(), query: query() } }';
       document.body.addEventListener('click', (function(_this) {
         return function(e) {
           var hasClickBinding, isBaseUrl, isLeftButton, url;
@@ -234,6 +242,12 @@ initialise = function(ko) {
           return _this.go(location.href.slice(_this.baseUrl.length));
         };
       })(this);
+      if (params.on != null) {
+        if (params.on.routeChanged != null) {
+          this.onRouteChanged(params.on.routeChanged);
+        }
+      }
+      this.go(location.href.slice(this.baseUrl.length));
       return ko.applyBindings(this.viewModel);
     };
 
@@ -261,8 +275,35 @@ initialise = function(ko) {
           this.viewModel.parameters(null);
           this.viewModel.component(this.notFoundComponent);
         }
+        this.element.dispatchEvent(new CustomEvent(this.events.routeChanged, {
+          detail: {
+            url: url.href,
+            component: this.viewModel.component(),
+            context: {
+              hash: this.viewModel.hash(),
+              query: this.viewModel.query(),
+              parameters: this.viewModel.parameters()
+            }
+          }
+        }));
       }
       return history.pushState(null, null, url.href);
+    };
+
+    KnockoutSinglePageExtension.prototype.on = function(event, callback) {
+      return this.element.addEventListener(event, callback);
+    };
+
+    KnockoutSinglePageExtension.prototype.onRouteChanged = function(callback) {
+      return this.on(this.events.routeChanged, callback);
+    };
+
+    KnockoutSinglePageExtension.prototype.off = function(event, callback) {
+      return this.element.removeEventListener(event, callback);
+    };
+
+    KnockoutSinglePageExtension.prototype.offRouteChanged = function(callback) {
+      return this.off(this.events.routeChanged, callback);
     };
 
     return KnockoutSinglePageExtension;

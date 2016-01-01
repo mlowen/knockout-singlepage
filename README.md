@@ -161,6 +161,56 @@ And add these to an object that is passed to the view model of the component usi
 }
 ```
 
+### Events
+
+Knockout-SinglePage emits the event `ko-sp-route-changed` event when the URL changes and a new component is loaded. It is important to note that if the `go` method is called with the 'url-only' option or the `data-route` attribute is used with the 'none' or 'url-only' options then the event will not be triggered. The event is dispatched from the element that Knockout-SinglePage has been bound to, an event handler can either be bound to that element or use the helper methods provided by Knockout-SinglePage.
+
+* `on(event, callback)` Will bind the callback to event.
+* `onRouteChanged(callback)` This is the equivalent of calling the `on` method with `'ko-sp-route-changed'` in as the event.
+* `off(event, callback)` Will remove the binding to the event.
+* `offRouteChanged(callback)` This is the equivalent of calling the `off` method with `'ko-sp-route-changed'` in as the event.
+
+When the `ko-sp-route-changed` event is triggered the Knockout-SinglePage specific information can be found in the detail property of the event. The data supplied is the URL, the component being displayed and the route context. The structure of the data will look like the following:
+
+```js
+{
+	detail: {
+		url: '/foo/1#bar?tar=2&baz=3&tar=4',
+		component: 'foo-component',
+		context: {
+			params: { id: 1 },
+			hash: 'bar',
+			query: {
+				tar: [ 2, 4 ],
+				baz: 3
+			}
+		}
+	}
+}
+```
+
+### Accessing the underlying element
+
+Once Knockout-SinglePage has been initialised the element that it has been bound is accessible via the `element` property.
+
+### Initialising with an object
+
+In the scenario where Knockout-SinglePage is initialised and you want to handle the `ko-sp-route-changed` event if you use the `init` method as described above then the code will not miss receiving the event emitted on the initial component load. The `init` method also accepts the passing in of an object as an argument which will allow you to bind events before the initial component is loaded. The equivalent of the previous example with event binding would be as follows:
+
+```js
+ko.singlePage.init({
+	routes: routes,
+	element: document.getElementById('app'),
+	on: {
+		routeChanged: function(e) {
+			console.log(e);
+		}
+	}
+});
+```
+
+Note that in the scenario where the first argument passed in is an object all other arguments are ignored.
+
 ### Loading via AMD
 
 Knockout-SinglePage will expose itself as an [AMD module](http://en.wikipedia.org/wiki/Asynchronous_module_definition) if it is possible. If it is a mixed environment where some things are loaded via AMD and some aren't Knockout-SinglePage will expose itself as an AMD module and load itself into the global scope if Knockout is available in the global scope. When loading Knockout-SinglePage as an AMD module it is important to note that it expects Knockout to be loaded as `knockout`.
@@ -223,7 +273,7 @@ Knockout-SinglePage has [continuous integration set up at Travis](https://travis
 
 Knockout-SinglePage is available under the MIT license which is as follows:
 
-Copyright &copy; 2015 Michael Lowen
+Copyright &copy; 2016 Michael Lowen
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 

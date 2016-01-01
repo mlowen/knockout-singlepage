@@ -11,4 +11,11 @@ require [
 		'/scripts/routes.js'
 		'knockout.singlepage'
 	], (ko, routes) ->
-		ko.singlePage.init routes, document.getElementById('app')
+		ko.singlePage.init {
+			routes: routes
+			element: document.getElementById 'app'
+			on:
+				routeChanged: (e) ->
+					console.log 'Route has changed'
+					console.log e
+		}
