@@ -9,6 +9,8 @@ initialise = (ko) ->
 				parameters: ko.observable null
 				hash: ko.observable null
 				query: ko.observable null
+			@events =
+				routeChanged: 'ko-sp-route-changed'
 
 		init: (routes, element) ->
 			throw 'Router has already been initialised' if @router
@@ -17,10 +19,9 @@ initialise = (ko) ->
 			ko.components.register @notFoundComponent, template: 'This page does not exist'
 
 			@router = new Router ko, routes
-			@go location.href[@baseUrl.length ...]
 
-			element = document.body unless element
-			element.dataset.bind = 'component: { name: component(), params: { params: parameters(), hash: hash(), query: query() } }'
+			@element = if element? then element else document.body
+			@element.dataset.bind = 'component: { name: component(), params: { params: parameters(), hash: hash(), query: query() } }'
 
 			document.body.addEventListener 'click', (e) =>
 				if e.target.tagName.toLowerCase() == 'a'
@@ -48,6 +49,8 @@ initialise = (ko) ->
 
 			window.onpopstate = (e) => @go location.href[@baseUrl.length ...]
 
+			@go location.href[@baseUrl.length ...]
+
 			ko.applyBindings @viewModel
 
 		go: (url) ->
@@ -71,6 +74,20 @@ initialise = (ko) ->
 					@viewModel.parameters null
 					@viewModel.component @notFoundComponent
 
+				@element.dispatchEvent new CustomEvent @events.routeChanged, {
+					detail:
+						url: url.href,
+						component: @viewModel.component()
+				}
+
 			history.pushState null, null, url.href
+
+		# Event Management
+
+		on: (event, callback) -> @element.addEventListener event, callback
+		onRouteChanged: (callback) -> @on @events.routeChanged, callback
+
+		off: (event, callback) -> @element.removeEventListener event, callback
+		offRouteChanged: (callback) -> @off @events.routeChanged, callback
 
 	ko.singlePage = new KnockoutSinglePageExtension() unless ko.singlePage
