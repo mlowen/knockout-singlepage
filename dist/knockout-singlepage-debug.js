@@ -1,5 +1,5 @@
 /*!
- * knockout-singlepage 0.2.0-alpha
+ * knockout-singlepage 0.2.0
  * (c) Michael Lowen - https://github.com/mlowen/knockout-singlepage
  * License: MIT (http://opensource.org/licenses/mit-license.php)
  */
