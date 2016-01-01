@@ -2,7 +2,7 @@ requirejs.config
 	baseUrl: '/'
 	paths:
 		'text': '//cdnjs.cloudflare.com/ajax/libs/require-text/2.0.12/text'
-		'knockout': '/scripts/knockout'
+		'knockout': '//cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min'
 		'knockout.singlepage': '/scripts/knockout-singlepage-debug'
 	urlArgs: 'bust=' + (new Date()).getTime()
 
