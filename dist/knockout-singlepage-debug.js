@@ -193,14 +193,22 @@ initialise = function(ko) {
     }
 
     KnockoutSinglePageExtension.prototype.init = function(routes, element) {
+      var params;
       if (this.router) {
         throw 'Router has already been initialised';
+      }
+      params = routes;
+      if (Array.isArray(routes)) {
+        params = {
+          routes: routes,
+          element: element
+        };
       }
       ko.components.register(this.notFoundComponent, {
         template: 'This page does not exist'
       });
-      this.router = new Router(ko, routes);
-      this.element = element != null ? element : document.body;
+      this.router = new Router(ko, params.routes);
+      this.element = params.element != null ? params.element : document.body;
       this.element.dataset.bind = 'component: { name: component(), params: { params: parameters(), hash: hash(), query: query() } }';
       document.body.addEventListener('click', (function(_this) {
         return function(e) {
@@ -234,6 +242,11 @@ initialise = function(ko) {
           return _this.go(location.href.slice(_this.baseUrl.length));
         };
       })(this);
+      if (params.on != null) {
+        if (params.on.routeChanged != null) {
+          this.onRouteChanged(params.on.routeChanged);
+        }
+      }
       this.go(location.href.slice(this.baseUrl.length));
       return ko.applyBindings(this.viewModel);
     };

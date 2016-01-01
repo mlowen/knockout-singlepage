@@ -15,12 +15,19 @@ initialise = (ko) ->
 		init: (routes, element) ->
 			throw 'Router has already been initialised' if @router
 
+			params = routes
+
+			if Array.isArray routes
+				params =
+					routes: routes
+					element: element
+
 			# Register default 404 component
 			ko.components.register @notFoundComponent, template: 'This page does not exist'
 
-			@router = new Router ko, routes
+			@router = new Router ko, params.routes
 
-			@element = if element? then element else document.body
+			@element = if params.element? then params.element else document.body
 			@element.dataset.bind = 'component: { name: component(), params: { params: parameters(), hash: hash(), query: query() } }'
 
 			document.body.addEventListener 'click', (e) =>
@@ -48,6 +55,10 @@ initialise = (ko) ->
 			, false
 
 			window.onpopstate = (e) => @go location.href[@baseUrl.length ...]
+
+			# Attach any event handlers
+			if params.on?
+				@onRouteChanged params.on.routeChanged if params.on.routeChanged?
 
 			@go location.href[@baseUrl.length ...]
 
