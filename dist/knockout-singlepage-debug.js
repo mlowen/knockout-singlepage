@@ -248,7 +248,7 @@ initialise = function(ko) {
         }
       }
       this.go(location.href.slice(this.baseUrl.length));
-      return ko.applyBindings(this.viewModel);
+      return ko.applyBindings(this.viewModel, this.element);
     };
 
     KnockoutSinglePageExtension.prototype.go = function(url) {

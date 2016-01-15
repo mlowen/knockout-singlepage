@@ -62,7 +62,7 @@ initialise = (ko) ->
 
 			@go location.href[@baseUrl.length ...]
 
-			ko.applyBindings @viewModel
+			ko.applyBindings @viewModel, @element
 
 		go: (url) ->
 			throw 'Router has not been initialised' unless @router
