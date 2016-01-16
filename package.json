@@ -19,15 +19,7 @@
   },
   "homepage": "https://github.com/mlowen/knockout-singlepage",
   "devDependencies": {
-    "grunt": "^0.4.5",
-    "grunt-contrib-clean": "^0.6.0",
-    "grunt-contrib-coffee": "^0.13.0",
-    "grunt-contrib-compress": "^0.13.0",
-    "grunt-contrib-concat": "^0.5.1",
-    "grunt-contrib-copy": "^0.8.0",
-    "grunt-contrib-jasmine": "^0.8.2",
-    "grunt-contrib-uglify": "^0.9.1",
-    "grunt-contrib-watch": "^0.6.1"
+    "gulp": "^3.9.0"
   },
   "dependencies": {
     "knockout": "^3.4.0"
