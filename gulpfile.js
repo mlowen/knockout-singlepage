@@ -3,13 +3,9 @@ var coffee = require('gulp-coffee');
 var jasmine = require('gulp-jasmine-phantom');
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
+var header = require('gulp-header');
 
-var jsFiles = [
-	'./build/url-query-parser.js',
-	'./build/route.js',
-	'./build/router.js',
-	'./build/extension.js'
-]
+var pkg = require('./package.json');
 
 gulp.task('build:source', function () {
 	return gulp.src('./src/**/*.coffee')
@@ -30,6 +26,8 @@ gulp.task('build:demos', function () {
 });
 
 gulp.task('build:release', [ 'run:tests' ], function () {
+	banner = '/*!\n * <%= name %> <%= version %>\n * (c) <%= author %> - <%= homepage %>\n * License: <%= license.type %> (<%= license.url %>)\n */\n';
+
 	return gulp.src([
 			'src/fragments/prefix.js',
 			'build/url-query-parser.js',
@@ -40,6 +38,7 @@ gulp.task('build:release', [ 'run:tests' ], function () {
 		])
 		.pipe(concat('knockout-singlepage.js'))
 		.pipe(uglify())
+		.pipe(header(banner, pkg))
 		.pipe(gulp.dest('./dist'));
 });
 
@@ -56,4 +55,4 @@ gulp.task('run:tests', [ 'build' ], function () {
 });
 
 gulp.task('build', [ 'build:source', 'build:tests', 'build:demos' ]);
-gulp.task('default', [ 'build' ]);
+gulp.task('default', [ 'build:release' ]);
