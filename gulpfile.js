@@ -1,6 +1,7 @@
 var gulp = require('gulp');
 var coffee = require('gulp-coffee');
 var jasmine = require('gulp-jasmine-phantom');
+var concat = require('gulp-concat');
 
 var jsFiles = [
 	'./build/url-query-parser.js',
@@ -27,6 +28,19 @@ gulp.task('build:demos', function () {
 		.pipe(gulp.dest('./demo'))
 });
 
+gulp.task('build:debug', [ 'run:tests' ], function() {
+	return gulp.src([
+			'src/fragments/prefix.js',
+			'build/url-query-parser.js',
+			'build/route.js',
+			'build/router.js',
+			'build/extension.js',
+			'src/fragments/suffix.js',
+		])
+		.pipe(concat('knockout-singlepage-debug.js'))
+		.pipe(gulp.dest('./dist'));
+});
+
 gulp.task('run:tests', [ 'build' ], function () {
 	return gulp.src('./tests/**/*.js')
 		.pipe(jasmine({
@@ -39,5 +53,5 @@ gulp.task('run:tests', [ 'build' ], function () {
 		}));
 });
 
-gulp.task('build', [ 'build:source' ]);
+gulp.task('build', [ 'build:source', 'build:tests', 'build:demos' ]);
 gulp.task('default', [ 'build' ]);
