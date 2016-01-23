@@ -2,6 +2,7 @@ var gulp = require('gulp');
 var coffee = require('gulp-coffee');
 var jasmine = require('gulp-jasmine-phantom');
 var concat = require('gulp-concat');
+var uglify = require('gulp-uglify');
 
 var jsFiles = [
 	'./build/url-query-parser.js',
@@ -28,7 +29,7 @@ gulp.task('build:demos', function () {
 		.pipe(gulp.dest('./demo'))
 });
 
-gulp.task('build:debug', [ 'run:tests' ], function() {
+gulp.task('build:release', [ 'run:tests' ], function () {
 	return gulp.src([
 			'src/fragments/prefix.js',
 			'build/url-query-parser.js',
@@ -37,7 +38,8 @@ gulp.task('build:debug', [ 'run:tests' ], function() {
 			'build/extension.js',
 			'src/fragments/suffix.js',
 		])
-		.pipe(concat('knockout-singlepage-debug.js'))
+		.pipe(concat('knockout-singlepage.js'))
+		.pipe(uglify())
 		.pipe(gulp.dest('./dist'));
 });
 
