@@ -21,6 +21,12 @@ gulp.task('build:tests', function () {
 		.pipe(gulp.dest('./tests'));
 });
 
+gulp.task('build:demos', function () {
+	return gulp.src('./demo/**/*.coffee')
+		.pipe(coffee({ bare: true }))
+		.pipe(gulp.dest('./demo'))
+});
+
 gulp.task('run:tests', [ 'build' ], function () {
 	return gulp.src('./tests/**/*.js')
 		.pipe(jasmine({
