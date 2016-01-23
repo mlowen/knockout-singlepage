@@ -19,7 +19,10 @@
   },
   "homepage": "https://github.com/mlowen/knockout-singlepage",
   "devDependencies": {
-    "gulp": "^3.9.0"
+    "gulp": "^3.9.0",
+    "gulp-bower": "0.0.11",
+    "gulp-jasmine-phantom": "^2.0.1",
+    "phantomjs": "^1.9.19"
   },
   "dependencies": {
     "knockout": "^3.4.0"
