@@ -42,8 +42,7 @@ The dependencies for using the compiled version of Knockout-SinglePage are:
 
 In addition to the above there are also the following dependencies for developing Knockout-SinglePage:
 
-* [Grunt](http://gruntjs.com/)
-* [Bower](http://bower.io/)
+* [Gulp](http://gulpjs.com/)
 
 ## Usage
 
@@ -227,36 +226,30 @@ Any known issues can be found on the [GitHub issues page with the `bug` tag](htt
 
 If you are wanting to contribute to Knockout-SinglePage the first thing you will want to do is [clone the source code](https://github.com/mlowen/knockout-singlepage), once you have done that you can install the
 
-If you are just starting to work with the Knockout-SinglePage source code the first thing you will want to do is make sure you have the development dependencies installed and then install all of the plugins that Grunt requires by running the following command:
+If you are just starting to work with the Knockout-SinglePage source code the first thing you will want to do is make sure you have the development dependencies installed and then install all of the plugins that Gulp requires by running the following command:
 
 ```
 npm install
 ```
 
-You will then want to install the library dependencies which is done with bower and the following command:
-
-```
-bower install
-```
-
 Now that the dependencies have been installed you can compile the coffeescript into javascript by running the following command:
 
 ```
-grunt
+gulp
 ```
 
-During development it is handy to have Grunt rebuilding the javascript whenever a change is made, this can be done by running the following command:
+During development it is handy to have Gulp rebuilding the javascript whenever a change is made, this can be done by running the following command:
 
 ```
-grunt watch
+gulp watch
 ```
 
 ### Running tests
 
-Knockout-SinglePage uses [Jasmine](http://jasmine.github.io/) for any of its tests, these are run when you run `grunt` and are automatically invoked when a source file is changed while `grunt watch` is running. However if you only want to run the tests and not create the final javascript files this can be done with the following command:
+Knockout-SinglePage uses [Jasmine](http://jasmine.github.io/) for any of its tests, these are run when you run `gulp` and are automatically invoked when a source file is changed while `gulp watch` is running. However if you only want to run the tests and not create the final javascript files this can be done with the following command:
 
 ```
-grunt test
+gulp test
 ```
 
 ### Running the demos

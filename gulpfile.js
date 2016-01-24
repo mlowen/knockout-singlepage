@@ -5,6 +5,7 @@ var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
 var header = require('gulp-header');
 var copy = require('gulp-copy2');
+var zip = require('gulp-zip'); 
 
 var pkg = require('./package.json');
 
@@ -43,6 +44,16 @@ gulp.task('build:release', [ 'run:tests' ], function () {
 		.pipe(gulp.dest('./dist'));
 });
 
+gulp.task('build:package', [ 'build:release' ], function () {
+	return gulp.src([
+		'dist/knockout-singlepage.js',
+		'README.md',
+		'LICENSE',
+	])
+	.pipe(zip(pkg.name + '-' + pkg.version + '.zip'))
+	.pipe(gulp.dest('./'))
+});
+
 gulp.task('run:tests', [ 'build' ], function () {
 	return gulp.src('./tests/**/*.js')
 		.pipe(jasmine({
@@ -62,6 +73,10 @@ gulp.task('copy:demo', [ 'build:release' ], function () {
 		{ src: distFile, dest: './demo/amd/scripts/' },
 		{ src: distFile, dest: './demo/traditional/scripts/' }
 	]);
+});
+
+gulp.task('watch', function () {
+	gulp.watch('./**/*.coffee', [ 'copy:demo' ])
 });
 
 gulp.task('demo', [ 'copy:demo', 'build:demo' ]);
