@@ -27,7 +27,7 @@ gulp.task('build:demo', function () {
 });
 
 gulp.task('build:release', [ 'run:tests' ], function () {
-	banner = '/*!\n * <%= name %> <%= version %>\n * (c) <%= author %> - <%= homepage %>\n * License: <%= license.type %> (<%= license.url %>)\n */\n';
+	var banner = '/*!\n * <%= name %> <%= version %>\n * (c) <%= author %> - <%= homepage %>\n * License: <%= license.type %> (<%= license.url %>)\n */\n';
 
 	return gulp.src([
 			'src/fragments/prefix.js',
