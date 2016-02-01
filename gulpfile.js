@@ -33,7 +33,7 @@ gulp.task('build:release', [ 'run:tests' ], function () {
 	return gulp.src([
 			'src/fragments/prefix.js',
 			'build/url-query-parser.js',
-			'build/route.js',
+			'src/route.js',
 			'build/router.js',
 			'build/extension.js',
 			'src/fragments/suffix.js',
@@ -54,14 +54,17 @@ gulp.task('build:package', [ 'build:release' ], function () {
 	.pipe(gulp.dest('./'))
 });
 
-gulp.task('run:tests', [ 'build' ], function () {
-	return gulp.src('./tests/**/*.js')
+gulp.task('run:tests', function () {
+	return gulp.src('./tests/route-tests.js')
 		.pipe(jasmine({
 			jasmineVersion: "2.3",
 			integration: true,
 			vendor: [
 				'./node_modules/knockout/build/output/knockout-latest.debug.js',
-				'./build/**/*.js'
+				'build/url-query-parser.js',
+				'src/route.js',
+				'build/router.js',
+				'build/extension.js',
 			]
 		}));
 });
@@ -75,9 +78,20 @@ gulp.task('copy:demo', [ 'build:release' ], function () {
 	]);
 });
 
-gulp.task('watch', function () {
-	gulp.watch('./**/*.coffee', [ 'copy:demo' ])
+/* Watch tasks */
+
+gulp.task('watch:tests', [ 'run:tests' ], function () {
+	gulp.watch('./tests/*.js', [ 'run:tests' ]);
+	gulp.watch('./src/**/*.js', [ 'run:tests' ]);
 });
+
+gulp.task('watch', function () {
+	gulp.watch('./**/*.coffee', [ 'copy:demo' ]);
+	gulp.watch('./src/**/*.js', [ 'copy:demo' ]);
+	gulp.watch('./tests/*.js', [ 'run:tests' ]);
+});
+
+/* Meta tasks */
 
 gulp.task('demo', [ 'copy:demo', 'build:demo' ]);
 gulp.task('build', [ 'build:source', 'build:tests', 'build:demo' ]);
