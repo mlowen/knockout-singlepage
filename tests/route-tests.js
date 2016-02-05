@@ -125,6 +125,12 @@ describe('Route', function () {
 		}).toThrow(exceptions.url);
 	});
 	
+	it('allows the url to be /', function () {
+		var route = new Route({ name: 'default', url: '/' });
+		
+		expect(route.url).toBe('/');
+	});
+	
 	it('allows a variable in the url contains a _.', function () {
 		var url = '/test/:u_rl';
 		var route = new Route({ name: 'route-name', url: url });

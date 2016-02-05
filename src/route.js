@@ -8,7 +8,7 @@ var Route = function (data) {
 	
 	var regex = {
 		whitespace: /^\s+$/,
-		url: /^(\s+)?(\/((:[a-z](\w+))|(\w|-)+))+(\s+)?$/i,
+		url: /^(\s+)?((\/)|((\/((:[a-z](\w+))|(\w|-)+))+))(\s+)?$/i,
 		parameters: /:([a-z][a-z0-9]+)/ig
 	};
 	
