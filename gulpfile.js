@@ -57,14 +57,15 @@ gulp.task('build:package', [ 'build:release' ], function () {
 gulp.task('run:tests', function () {
 	return gulp.src([
 			'./tests/route-tests.js',
-			'./tests/router-tests.js'
+			'./tests/router-tests.js',
+			'./tests/url-query-parser-tests.js'
 		])
 		.pipe(jasmine({
 			jasmineVersion: "2.3",
 			integration: true,
 			vendor: [
 				'./node_modules/knockout/build/output/knockout-latest.debug.js',
-				'build/url-query-parser.js',
+				'src/url-query-parser.js',
 				'src/route.js',
 				'src/router.js',
 				'build/extension.js',
