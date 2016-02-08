@@ -52,16 +52,16 @@ To add Knockout-SinglePage to your web application you need to reference using a
 <script type="text/javascript" src="<path to scripts>/knockout-singlepage.js"></script>
 ```
 
-Due to the dependency on Knockout the script tag must be after tag that references Knockout. Once you have referenced the library it is time to define some routes. Routes are an array of objects containing a name and a URL like so:
+Due to the dependency on Knockout the script tag must be after tag that references Knockout. Once you have referenced the library it is time to define some routes. Routes are an array of objects containing a name, a URL and optionally a component like so:
 
 ```js
 var routes = [
-	{ name: 'default', url: '/' },
+	{ name: 'default', url: '/', component: 'dashboardComponent' },
 	{ name: 'anotherRoute', url: '/another-route' }
 ];
 ```
 
-As mentioned above Knockout-SinglePage relies on Knockout components to provide some of the [core functionality](http://knockoutjs.com/documentation/component-overview.html), the name for a route must map to a component that has been registered. Knockout-SinglePage also supports route variables which are defined by prefixing a portion of the URL with a colon `:` an example of which is below:
+As mentioned above Knockout-SinglePage relies on Knockout components to provide some of the [core functionality](http://knockoutjs.com/documentation/component-overview.html), if the component field is not defined then the name of the route must map to a component that has been registered. Knockout-SinglePage also supports route variables which are defined by prefixing a portion of the URL with a colon `:` an example of which is below:
 
 ```js
 { name: 'routeWithVariable', url: '/foo/:id' }
@@ -124,7 +124,7 @@ The values which are accepted for the `data-route` attribute are:
 
 ### Defining component with the route
 
-As previously mentioned the name of a route must match a registered component, if wanted you can use the route definition to also define the component. This is done with the `component` field which acts in the same manner as the object passed in as the second parameter to [`ko.components.register`](http://knockoutjs.com/documentation/component-registration.html), Knockout-SinglePage uses the name of the route as the first argument to that method. The route definitions in turn look like:
+You can define a component when defining a route. This is done by passing an object via the `component` field which acts in the same manner as the object passed in as the second parameter to [`ko.components.register`](http://knockoutjs.com/documentation/component-registration.html), Knockout-SinglePage uses the name of the route as the name of the route. The route definitions in turn look like:
 
 ```js
 var routes = [
@@ -162,18 +162,21 @@ And add these to an object that is passed to the view model of the component usi
 
 ### Events
 
-Knockout-SinglePage emits the event `ko-sp-route-changed` event when the URL changes and a new component is loaded. It is important to note that if the `go` method is called with the 'url-only' option or the `data-route` attribute is used with the 'none' or 'url-only' options then the event will not be triggered. The event is dispatched from the element that Knockout-SinglePage has been bound to, an event handler can either be bound to that element or use the helper methods provided by Knockout-SinglePage.
+Knockout-SinglePage emits a set of events during the lifetime of the application. Events can be subscribed to either through a method or via the object which can be passed into the `init` method. In both cases either a method or an array of methods can be passed in to be bound to the event.
 
-* `on(event, callback)` Will bind the callback to event.
-* `onRouteChanged(callback)` This is the equivalent of calling the `on` method with `'ko-sp-route-changed'` in as the event.
-* `off(event, callback)` Will remove the binding to the event.
-* `offRouteChanged(callback)` This is the equivalent of calling the `off` method with `'ko-sp-route-changed'` in as the event.
+#### Route Changed
 
-When the `ko-sp-route-changed` event is triggered the Knockout-SinglePage specific information can be found in the detail property of the event. The data supplied is the URL, the component being displayed and the route context. The structure of the data will look like the following:
+* **Subscribe:** `ko.singlepage.subscribe.routeChanged(callback)`
+* **Unsubscribe:** `ko.singlepage.unsubscribe.routeChanged(callback)`
+
+The route changed event is fired when when the URL changes and a new component is loaded. It is important to note that if the `go` method is called with the 'url-only' option or the `data-route` attribute is used with the 'none' or 'url-only' options then the event will not be triggered.
+
+When the route changed event is triggered the Knockout-SinglePage specific information can be found in the detail property of the event. The data supplied is the URL, the component being displayed and the route context. The structure of the data will look like the following:
 
 ```js
 {
 	detail: {
+		name: 'foo',
 		url: '/foo/1#bar?tar=2&baz=3&tar=4',
 		component: 'foo-component',
 		context: {
@@ -188,9 +191,20 @@ When the `ko-sp-route-changed` event is triggered the Knockout-SinglePage specif
 }
 ```
 
-### Accessing the underlying element
+#### URL Changed
 
-Once Knockout-SinglePage has been initialised the element that it has been bound is accessible via the `element` property.
+* **Subscribe:** `ko.singlepage.subscribe.urlChanged(callback)`
+* **Unsubscribe:** `ko.singlepage.unsubscribe.urlChanged(callback)`
+
+The URL changed event is triggered when the URL for the browser is changed but navigation does not move away from the application. The data which is supplied when the event is triggered is as follows:
+
+```js
+{
+	detail: {
+		url: '/foo/1#bar?tar=2&baz=3&tar=4'
+	}
+}
+```
 
 ### Initialising with an object
 
@@ -200,7 +214,7 @@ In the scenario where Knockout-SinglePage is initialised and you want to handle 
 ko.singlePage.init({
 	routes: routes,
 	element: document.getElementById('app'),
-	on: {
+	subscribe: {
 		routeChanged: function(e) {
 			console.log(e);
 		}
