@@ -1,6 +1,12 @@
 describe('Router', function () {
+	var eventManagerMock = {
+		publish: {
+			routeAdded: function (data) { }
+		}
+	}
+	
 	it('can add a single route.', function () {
-		var router = new Router();
+		var router = new Router(eventManagerMock);
 		
 		expect(router.routes().length).toBe(0);
 		
@@ -10,7 +16,7 @@ describe('Router', function () {
 	});
 	
 	it('can add multiple routes.', function () {
-		var router = new Router();
+		var router = new Router(eventManagerMock);
 		
 		expect(router.routes().length).toBe(0);
 		
@@ -23,13 +29,13 @@ describe('Router', function () {
 	});
 	
 	it('can be initialised with a route.', function () {
-		var router = new Router({ name: 'default', url: '/' });
+		var router = new Router(eventManagerMock, { name: 'default', url: '/' });
 		
 		expect(router.routes().length).toBe(1);
 	});
 	
 	it('can be initialised with multiple routes.', function () {
-		var router = new Router([
+		var router = new Router(eventManagerMock, [
 			{ name: 'default', url: '/' },
 			{ name: 'test-route', url: '/test-url' }
 		]);
@@ -39,7 +45,7 @@ describe('Router', function () {
 	
 	it('throws an exception when adding a route which matches an existing route.', function () {
 		var message = 'Route clashes with existing route'; 
-		var router = new Router({
+		var router = new Router(eventManagerMock, {
 			name: 'default',
 			url: '/route/:id'
 		});
@@ -58,7 +64,7 @@ describe('Router', function () {
 	});
 	
 	it('returns a list of route names from the routes method.', function () {
-		var router = new Router([
+		var router = new Router(eventManagerMock, [
 			{ name: 'default', url: '/' },
 			{ name: 'test-route', url: '/test-url' }
 		]);
@@ -70,7 +76,7 @@ describe('Router', function () {
 	});
 	
 	it('returns the appropriate route when the default (/) url is passed to the match method.', function () {
-		var router = new Router([
+		var router = new Router(eventManagerMock, [
 			{ name: 'default', url: '/' },
 			{ name: 'test1', url: '/foo' },
 			{ name: 'test2', url: '/foo/:id' }
@@ -82,7 +88,7 @@ describe('Router', function () {
 	});
 	
 	it('returns the appropriate route when a url is passed to the match method.', function () {
-		var router = new Router([
+		var router = new Router(eventManagerMock, [
 			{ name: 'default', url: '/' },
 			{ name: 'test1', url: '/foo' },
 			{ name: 'test2', url: '/foo/:id' }
@@ -94,7 +100,7 @@ describe('Router', function () {
 	});
 	
 	it('returns the appropriate route when a url is passed to the match method.', function () {
-		var router = new Router([
+		var router = new Router(eventManagerMock, [
 			{ name: 'default', url: '/' },
 			{ name: 'test1', url: '/foo' },
 			{ name: 'test2', url: '/foo/:id' }
@@ -107,7 +113,7 @@ describe('Router', function () {
 	});
 	
 	it('returns the appropriate route when a url is passed to the match method.', function () {
-		var router = new Router([
+		var router = new Router(eventManagerMock, [
 			{ name: 'default', url: '/' },
 			{ name: 'test1', url: '/foo' },
 			{ name: 'test2', url: '/foo/:id' }

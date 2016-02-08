@@ -1,4 +1,4 @@
-var Router = function (initial) {
+var Router = function (eventManager, initial) {
 	var self = this;
 	var routes = [];
 	var exceptions = {
@@ -24,6 +24,7 @@ var Router = function (initial) {
 				throw exceptions.existingRoute;
 			
 			routes.push(newRoute);
+			eventManager.publish.routeAdded({ route: newRoute });
 		}
 	};
 	
