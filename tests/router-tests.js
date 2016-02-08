@@ -115,4 +115,27 @@ describe('Router', function () {
 		
 		expect(router.match('/bar')).toBe(null);
 	});
+	
+	it('retrieves the appropriate route when given the route name.', function () {
+		var router = new Router([
+			{ name: 'default', url: '/' },
+			{ name: 'test1', url: '/foo' },
+			{ name: 'test2', url: '/foo/:id' }
+		]);
+		
+		var route = router.get('test1');
+		
+		expect(route.name).toBe('test1');
+		expect(route.url).toBe('/foo');
+	});
+	
+	it('returns null when there is no route matching the given name.', function () {
+		var router = new Router([
+			{ name: 'default', url: '/' },
+			{ name: 'test1', url: '/foo' },
+			{ name: 'test2', url: '/foo/:id' }
+		]);
+		
+		expect(router.get('non-existant-route')).toBe(null);
+	});
 });

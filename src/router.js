@@ -43,6 +43,14 @@ var Router = function (initial) {
 		return route;
 	};
 	
+	self.get = function(name) {
+		var route = routes.filter(function (route) {
+			return route.name == name;
+		})[0];
+		
+		return route ? route : null;
+	};
+	
 	/* Constructor */
 	if (initial)
 		self.add(initial);
