@@ -93,7 +93,7 @@ var Route = function (data) {
 		var url = self.url;
 		
 		parameters.forEach(function (param) {
-			var value = params[param]; 
+			var value = ko.unwrap(params[param]); 
 			
 			if (!value)
 				throw exceptions.missingParameter + param;

@@ -356,11 +356,17 @@ describe('Route', function () {
 		}).toThrow('No parameters supplied to format route');
 	});
 	
-	it('replaces multiple parameters in the url when format is called.', function () {
+	it('throws an exception when an expected parameter is not present.', function () {
 		var route = new Route({ name: 'default', url: '/parent/:parent/child/:child' });
 		
 		expect(function () { 
 			route.format({ parent: 3 });
 		}).toThrow('Unable to format route due to missing parameter: child');
+	});
+	
+	it('unwraps a knockout object when formatting a URL.', function () {
+		var route = new Route({ name: 'default', url: '/item/:id' });
+		
+		expect(route.format({ id: ko.observable(3) })).toBe('/item/3');
 	});
 });
