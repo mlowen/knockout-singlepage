@@ -9,7 +9,7 @@ var zip = require('gulp-zip');
 
 var pkg = require('./package.json');
 
-gulp.task('build:scripts', [ 'run:tests' ], function () {
+gulp.task('scripts', [ 'tests' ], function () {
 	var banner = '/*!\n * <%= name %> <%= version %>\n * (c) <%= author %> - <%= homepage %>\n * License: <%= license.type %> (<%= license.url %>)\n */\n';
 
 	return gulp.src([
@@ -28,7 +28,7 @@ gulp.task('build:scripts', [ 'run:tests' ], function () {
 		.pipe(gulp.dest('./dist'));
 });
 
-gulp.task('build:package', [ 'build:release' ], function () {
+gulp.task('package', [ 'scripts' ], function () {
 	return gulp.src([
 		'dist/knockout-singlepage.js',
 		'README.md',
@@ -38,7 +38,7 @@ gulp.task('build:package', [ 'build:release' ], function () {
 	.pipe(gulp.dest('./'))
 });
 
-gulp.task('run:tests', function () {
+gulp.task('tests', function () {
 	return gulp.src([
 			'./tests/route-tests.js',
 			'./tests/router-tests.js',
@@ -57,7 +57,7 @@ gulp.task('run:tests', function () {
 		}));
 });
 
-gulp.task('copy:demo', [ 'build:scripts' ], function () {
+gulp.task('demo', [ 'scripts' ], function () {
 	var distFile = './dist/knockout-singlepage.js';
 
 	return copy([
@@ -69,11 +69,10 @@ gulp.task('copy:demo', [ 'build:scripts' ], function () {
 /* Watch tasks */
 
 gulp.task('watch', function () {
-	gulp.watch('./src/**/*.js', [ 'copy:demo' ]);
-	gulp.watch('./tests/*.js', [ 'run:tests' ]);
+	gulp.watch('./src/**/*.js', [ 'demo' ]);
+	gulp.watch('./tests/*.js', [ 'tests' ]);
 });
 
 /* Meta tasks */
 
-gulp.task('demo', [ 'copy:demo', 'build:demo' ]);
-gulp.task('default', [ 'build:scripts' ]);
+gulp.task('default', [ 'scripts' ]);
