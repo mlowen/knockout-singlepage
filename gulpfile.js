@@ -9,12 +9,6 @@ var zip = require('gulp-zip');
 
 var pkg = require('./package.json');
 
-gulp.task('build:demo', function () {
-	return gulp.src('./demo/**/*.coffee')
-		.pipe(coffee({ bare: true }))
-		.pipe(gulp.dest('./demo'))
-});
-
 gulp.task('build:scripts', [ 'run:tests' ], function () {
 	var banner = '/*!\n * <%= name %> <%= version %>\n * (c) <%= author %> - <%= homepage %>\n * License: <%= license.type %> (<%= license.url %>)\n */\n';
 

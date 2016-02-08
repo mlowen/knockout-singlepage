@@ -5,6 +5,6 @@ build
 
 tests/load-routes-tests.js
 tests/match-routes-tests.js
-demo/**/*.js
+demo/**/knockout-singlepage.js
 _SpecRunner.html
 knockout-singlepage-*.zip
