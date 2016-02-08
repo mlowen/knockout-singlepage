@@ -3,7 +3,9 @@ var Route = function (data) {
 	var exceptions = {
 		data: 'Invalid route',
 		name: 'Route has an invalid name',
-		url: 'Route has an invalid URL'
+		url: 'Route has an invalid URL',
+		noParameters: 'No parameters supplied to format route',
+		missingParameter: 'Unable to format route due to missing parameter: '
 	};
 	
 	var regex = {
@@ -82,5 +84,23 @@ var Route = function (data) {
 		}
 		
 		return params;
+	};
+	
+	self.format = function (params) {
+		if (parameters.length > 0 && (!params || params.length == 0))
+			throw exceptions.noParameters;
+		
+		var url = self.url;
+		
+		parameters.forEach(function (param) {
+			var value = params[param]; 
+			
+			if (!value)
+				throw exceptions.missingParameter + param;
+				
+			url = url.replace(':' + param, value);
+		});
+		
+		return url;
 	};
 };

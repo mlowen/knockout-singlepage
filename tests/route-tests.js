@@ -258,9 +258,6 @@ describe('Route', function () {
 		
 		var parameters = route.parameters('/foo/bar');
 		
-		console.log(Object.keys(parameters));
-		console.log(Object.keys(parameters).length);
-		
 		expect(typeof parameters).toBe('object');
 		expect(Object.keys(parameters).length).toBe(1);
 		expect(parameters.id).toBe('bar');
@@ -273,9 +270,6 @@ describe('Route', function () {
 		});
 		
 		var parameters = route.parameters('/foo/1/bar/test');
-		
-		console.log(Object.keys(parameters));
-		console.log(Object.keys(parameters).length);
 		
 		expect(typeof parameters).toBe('object');
 		expect(Object.keys(parameters).length).toBe(2);
@@ -328,5 +322,45 @@ describe('Route', function () {
 		
 		expect(route.component).toBe(name);
 		expect(ko.components.isRegistered(name)).toBe(true);
+	});
+	
+	it('returns the url from format when there are no parameters required.', function () {
+		var route = new Route({ name: 'default', url: '/' });
+		
+		expect(route.format()).toBe('/');
+	});
+	
+	it('ignores any parameters passed to format when none are needed.', function () {
+		var route = new Route({ name: 'default', url: '/dashboard' });
+		
+		expect(route.format({ id: 1 })).toBe('/dashboard');
+	});
+	
+	it('replaces a parameter in the url when format is called.', function () {
+		var route = new Route({ name: 'default', url: '/item/:id' });
+		
+		expect(route.format({ id: 3 })).toBe('/item/3');
+	});
+	
+	it('replaces multiple parameters in the url when format is called.', function () {
+		var route = new Route({ name: 'default', url: '/parent/:parent/child/:child' });
+		
+		expect(route.format({ parent: 3, child: 'foo' })).toBe('/parent/3/child/foo');
+	});
+	
+	it('throws an exception when no parameters are supplied to format when the route requires them.', function () {
+		var route = new Route({ name: 'default', url: '/item/:id' });
+		
+		expect(function () {
+			route.format();
+		}).toThrow('No parameters supplied to format route');
+	});
+	
+	it('replaces multiple parameters in the url when format is called.', function () {
+		var route = new Route({ name: 'default', url: '/parent/:parent/child/:child' });
+		
+		expect(function () { 
+			route.format({ parent: 3 });
+		}).toThrow('Unable to format route due to missing parameter: child');
 	});
 });
