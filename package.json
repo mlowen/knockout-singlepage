@@ -15,7 +15,7 @@
     "url": "https://github.com/mlowen/knockout-singlepage/issues"
   },
   "scripts": {
-    "test": "gulp run:tests"
+    "test": "gulp tests"
   },
   "homepage": "https://github.com/mlowen/knockout-singlepage",
   "devDependencies": {

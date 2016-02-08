@@ -9,33 +9,17 @@ var zip = require('gulp-zip');
 
 var pkg = require('./package.json');
 
-gulp.task('build:source', function () {
-	return gulp.src('./src/**/*.coffee')
-		.pipe(coffee({ bare: true }))
-		.pipe(gulp.dest('./build'));
-});
-
-gulp.task('build:tests', function () {
-	return gulp.src('./tests/**/*.coffee')
-		.pipe(coffee({ bare: true }))
-		.pipe(gulp.dest('./tests'));
-});
-
-gulp.task('build:demo', function () {
-	return gulp.src('./demo/**/*.coffee')
-		.pipe(coffee({ bare: true }))
-		.pipe(gulp.dest('./demo'))
-});
-
-gulp.task('build:release', [ 'run:tests' ], function () {
+gulp.task('scripts', [ 'tests' ], function () {
 	var banner = '/*!\n * <%= name %> <%= version %>\n * (c) <%= author %> - <%= homepage %>\n * License: <%= license.type %> (<%= license.url %>)\n */\n';
 
 	return gulp.src([
 			'src/fragments/prefix.js',
-			'build/url-query-parser.js',
-			'build/route.js',
-			'build/router.js',
-			'build/extension.js',
+			'src/url-query-parser.js',
+			'src/route.js',
+			'src/router.js',
+			'src/event-manager.js',
+			'src/master-view-model.js',
+			'src/core.js',
 			'src/fragments/suffix.js',
 		])
 		.pipe(concat('knockout-singlepage.js'))
@@ -44,7 +28,7 @@ gulp.task('build:release', [ 'run:tests' ], function () {
 		.pipe(gulp.dest('./dist'));
 });
 
-gulp.task('build:package', [ 'build:release' ], function () {
+gulp.task('package', [ 'scripts' ], function () {
 	return gulp.src([
 		'dist/knockout-singlepage.js',
 		'README.md',
@@ -54,19 +38,26 @@ gulp.task('build:package', [ 'build:release' ], function () {
 	.pipe(gulp.dest('./'))
 });
 
-gulp.task('run:tests', [ 'build' ], function () {
-	return gulp.src('./tests/**/*.js')
+gulp.task('tests', function () {
+	return gulp.src([
+			'./tests/route-tests.js',
+			'./tests/router-tests.js',
+			'./tests/url-query-parser-tests.js'
+		])
 		.pipe(jasmine({
 			jasmineVersion: "2.3",
 			integration: true,
 			vendor: [
 				'./node_modules/knockout/build/output/knockout-latest.debug.js',
-				'./build/**/*.js'
+				'src/url-query-parser.js',
+				'src/route.js',
+				'src/router.js',
+				'build/extension.js',
 			]
 		}));
 });
 
-gulp.task('copy:demo', [ 'build:release' ], function () {
+gulp.task('demo', [ 'scripts' ], function () {
 	var distFile = './dist/knockout-singlepage.js';
 
 	return copy([
@@ -75,10 +66,13 @@ gulp.task('copy:demo', [ 'build:release' ], function () {
 	]);
 });
 
+/* Watch tasks */
+
 gulp.task('watch', function () {
-	gulp.watch('./**/*.coffee', [ 'copy:demo' ])
+	gulp.watch('./src/**/*.js', [ 'demo' ]);
+	gulp.watch('./tests/*.js', [ 'tests' ]);
 });
 
-gulp.task('demo', [ 'copy:demo', 'build:demo' ]);
-gulp.task('build', [ 'build:source', 'build:tests', 'build:demo' ]);
-gulp.task('default', [ 'build:release' ]);
+/* Meta tasks */
+
+gulp.task('default', [ 'scripts' ]);
