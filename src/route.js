@@ -3,9 +3,7 @@ var Route = function (data) {
 	var exceptions = {
 		data: 'Invalid route',
 		name: 'Route has an invalid name',
-		url: 'Route has an invalid URL',
-		noParameters: 'No parameters supplied to format route',
-		missingParameter: 'Unable to format route due to missing parameter: '
+		url: 'Route has an invalid URL'
 	};
 	
 	var regex = {
@@ -88,17 +86,17 @@ var Route = function (data) {
 	
 	self.format = function (params) {
 		if (parameters.length > 0 && (!params || params.length == 0))
-			throw exceptions.noParameters;
+			return null;
 		
 		var url = self.url;
 		
 		parameters.forEach(function (param) {
+			if (url == null)
+				return;
+			
 			var value = ko.unwrap(params[param]); 
 			
-			if (!value)
-				throw exceptions.missingParameter + param;
-				
-			url = url.replace(':' + param, value);
+			url = value ? url.replace(':' + param, value) : null;
 		});
 		
 		return url;

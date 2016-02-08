@@ -348,20 +348,16 @@ describe('Route', function () {
 		expect(route.format({ parent: 3, child: 'foo' })).toBe('/parent/3/child/foo');
 	});
 	
-	it('throws an exception when no parameters are supplied to format when the route requires them.', function () {
+	it('returns null when no parameters are supplied to format when the route requires them.', function () {
 		var route = new Route({ name: 'default', url: '/item/:id' });
 		
-		expect(function () {
-			route.format();
-		}).toThrow('No parameters supplied to format route');
+		expect(route.format()).toBe(null);
 	});
 	
-	it('throws an exception when an expected parameter is not present.', function () {
+	it('returns null when an expected parameter is not present.', function () {
 		var route = new Route({ name: 'default', url: '/parent/:parent/child/:child' });
 		
-		expect(function () { 
-			route.format({ parent: 3 });
-		}).toThrow('Unable to format route due to missing parameter: child');
+		expect(route.format({ parent: 3 })).toBe(null);
 	});
 	
 	it('unwraps a knockout object when formatting a URL.', function () {

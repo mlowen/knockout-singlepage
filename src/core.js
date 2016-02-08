@@ -7,6 +7,7 @@ var KnockoutSinglePage = function () {
 	var exceptions = {
 		alreadyInitialised: 'Knockout-SinglePage has already been initialised',
 		notInitialised: 'Knockout-SinglePage has not been initialised',
+		routeDoesntExist: 'No route exists with name: '
 	};
 
 	/* Private Methods */
@@ -120,6 +121,15 @@ var KnockoutSinglePage = function () {
 
 		history.pushState(null, null, url.href);
 		eventManager.publish.urlChanged({ url: url.href });
+	};
+	
+	self.formatURL = function (name, params) {
+		var route = router.get(name);
+		
+		if (!route)
+			throw exceptions.routeDoesntExist + name;
+		
+		return route.format(params);
 	};
 	
 	self.subscribe = {

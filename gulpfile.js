@@ -20,6 +20,7 @@ gulp.task('scripts', [ 'tests' ], function () {
 			'src/event-manager.js',
 			'src/master-view-model.js',
 			'src/core.js',
+			'src/bindings.js',
 			'src/fragments/suffix.js',
 		])
 		.pipe(concat('knockout-singlepage.js'))
