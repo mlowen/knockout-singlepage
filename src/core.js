@@ -41,7 +41,7 @@ var KnockoutSinglePage = function () {
 		params.element.dataset.bind = 'component: { name: component(), params: { params: parameters(), hash: hash(), query: query() } }';
 
 		eventManager = new EventManager(params.element);
-		router = new Router(eventManager, params.routes);
+		router = new Router(params.routes);
 
 		document.body.addEventListener('click', function (e) {
 			if (e.target.tagName.toLowerCase() != 'a')
@@ -80,9 +80,6 @@ var KnockoutSinglePage = function () {
 
 		// Attach any event handlers
 		if (params.subscribe) {
-			if (params.subscribe.routeAdded)
-				self.subscribe.routeAdded(params.subscribe.routeAdded);
-			
 			if (params.subscribe.routeChanged)
 				self.subscribe.routeChanged(params.subscribe.routeChanged);
 			
@@ -126,10 +123,6 @@ var KnockoutSinglePage = function () {
 	};
 	
 	self.subscribe = {
-		routeAdded: function (callback) {
-			mustBeInitialised();
-			eventManager.subscribe.routeAdded(callback);
-		},
 		routeChanged: function (callback) {
 			mustBeInitialised();
 			eventManager.subscribe.routeChanged(callback); 
@@ -141,10 +134,6 @@ var KnockoutSinglePage = function () {
 	};
 	
 	self.unsubscribe = {
-		routeAdded: function (callback) {
-			mustBeInitialised();
-			eventManager.unsubscribe.routeAdded(callback);
-		}, 
 		routeChanged: function (callback) {
 			mustBeInitialised();
 			eventManager.unsubscribe.routeChanged(callback); 
