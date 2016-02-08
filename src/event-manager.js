@@ -23,7 +23,7 @@ var EventManager = function (el) {
 			element.removeEventListener(event, callback);
 	};
 	
-	var publish = function (event, data) { element.dispatchEvent(new CustomEvent(events.routeChanged, { detail: data })); };
+	var publish = function (event, data) { element.dispatchEvent(new CustomEvent(event, { detail: data })); };
 	
 	/* Public */
 	

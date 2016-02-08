@@ -36,6 +36,6 @@ $ () ->
 	]
 
 	ko.singlePage.init routes, document.getElementById('app')
-	ko.singlePage.onRouteChanged (e) ->
+	ko.singlePage.subscribe.routeChanged (e) ->
 		console.log 'Route has changed.'
 		console.log e

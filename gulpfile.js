@@ -9,33 +9,23 @@ var zip = require('gulp-zip');
 
 var pkg = require('./package.json');
 
-gulp.task('build:source', function () {
-	return gulp.src('./src/**/*.coffee')
-		.pipe(coffee({ bare: true }))
-		.pipe(gulp.dest('./build'));
-});
-
-gulp.task('build:tests', function () {
-	return gulp.src('./tests/**/*.coffee')
-		.pipe(coffee({ bare: true }))
-		.pipe(gulp.dest('./tests'));
-});
-
 gulp.task('build:demo', function () {
 	return gulp.src('./demo/**/*.coffee')
 		.pipe(coffee({ bare: true }))
 		.pipe(gulp.dest('./demo'))
 });
 
-gulp.task('build:release', [ 'run:tests' ], function () {
+gulp.task('build:scripts', [ 'run:tests' ], function () {
 	var banner = '/*!\n * <%= name %> <%= version %>\n * (c) <%= author %> - <%= homepage %>\n * License: <%= license.type %> (<%= license.url %>)\n */\n';
 
 	return gulp.src([
 			'src/fragments/prefix.js',
-			'build/url-query-parser.js',
+			'src/url-query-parser.js',
 			'src/route.js',
-			'build/router.js',
-			'build/extension.js',
+			'src/router.js',
+			'src/event-manager.js',
+			'src/master-view-model.js',
+			'src/core.js',
 			'src/fragments/suffix.js',
 		])
 		.pipe(concat('knockout-singlepage.js'))
@@ -73,7 +63,7 @@ gulp.task('run:tests', function () {
 		}));
 });
 
-gulp.task('copy:demo', [ 'build:release' ], function () {
+gulp.task('copy:demo', [ 'build:scripts' ], function () {
 	var distFile = './dist/knockout-singlepage.js';
 
 	return copy([
@@ -84,13 +74,7 @@ gulp.task('copy:demo', [ 'build:release' ], function () {
 
 /* Watch tasks */
 
-gulp.task('watch:tests', [ 'run:tests' ], function () {
-	gulp.watch('./tests/*.js', [ 'run:tests' ]);
-	gulp.watch('./src/**/*.js', [ 'run:tests' ]);
-});
-
 gulp.task('watch', function () {
-	gulp.watch('./**/*.coffee', [ 'copy:demo' ]);
 	gulp.watch('./src/**/*.js', [ 'copy:demo' ]);
 	gulp.watch('./tests/*.js', [ 'run:tests' ]);
 });
@@ -98,5 +82,4 @@ gulp.task('watch', function () {
 /* Meta tasks */
 
 gulp.task('demo', [ 'copy:demo', 'build:demo' ]);
-gulp.task('build', [ 'build:source', 'build:tests', 'build:demo' ]);
-gulp.task('default', [ 'build:release' ]);
+gulp.task('default', [ 'build:scripts' ]);

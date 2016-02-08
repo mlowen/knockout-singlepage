@@ -3,7 +3,7 @@ requirejs.config
 	paths:
 		'text': '//cdnjs.cloudflare.com/ajax/libs/require-text/2.0.12/text'
 		'knockout': '//cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min'
-		'knockout.singlepage': '/scripts/knockout-singlepage-debug'
+		'knockout.singlepage': '/scripts/knockout-singlepage'
 	urlArgs: 'bust=' + (new Date()).getTime()
 
 require [
@@ -14,7 +14,7 @@ require [
 		ko.singlePage.init {
 			routes: routes
 			element: document.getElementById 'app'
-			on:
+			subscribe:
 				routeChanged: (e) ->
 					console.log 'Route has changed'
 					console.log e

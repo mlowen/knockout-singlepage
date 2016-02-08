@@ -101,7 +101,7 @@ var KnockoutSinglePage = function () {
 		if (typeof url == 'string')
 			url = { href: url };
 
-		if (url.route.toLowerCase() != 'url-only') {
+		if (!url.route || url.route.toLowerCase() != 'url-only') {
 			var route = router.match(url.href);
 
 			if (route)
@@ -111,8 +111,8 @@ var KnockoutSinglePage = function () {
 
 			eventManager.publish.routeChanged({
 				url: url.href,
-				name: route.name,
-				component: route.component,
+				name: route ? route.name : null,
+				component: route ? route.component : null,
 				context: {
 					hash: viewModel.hash(),
 					query: viewModel.query(),
