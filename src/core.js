@@ -12,17 +12,17 @@ var KnockoutSinglePage = function () {
 
 	/* Private Methods */
 	var isInitialised = function () { return router != null; };
-	
+
 	var mustBeInitialised = function () {
 		if (!isInitialised())
 			throw exceptions.notInitialised;
 	};
-	
+
 	var urlPath = function (url) {
-		if (url) 
+		if (url)
 			return url.slice(baseUrl.length);
-		
-		return urlPath(location.href); 
+
+		return urlPath(location.href);
 	};
 
 	/* Public Methods */
@@ -47,12 +47,12 @@ var KnockoutSinglePage = function () {
 		document.body.addEventListener('click', function (e) {
 			if (e.target.tagName.toLowerCase() != 'a')
 				return;
-				
+
 			// This feels hacky but it works, as best as I can tell there
 			// is no way to programmatically determine if there is a
 			// particular knockout binding on an element.
 			var hasClickBinding = false;
-			
+
 			if (e.target.dataset.bind) {
 				hasClickBinding = e.target.dataset.bind.split(',').reduce(function (initial, current) {
 					return initial || current.split(':')[0].trim().toLowerCase() == 'click';
@@ -64,26 +64,26 @@ var KnockoutSinglePage = function () {
 
 			if (isLeftButton && isBaseUrl && !hasClickBinding) {
 				var url = { href: urlPath(e.target.href) };
-				
+
 				if (e.target.dataset.route)
 					url.route = e.target.dataset.route.toLowerCase();
-					
+
 				if (url.route != 'none') {
 					self.go(url);
-					
+
 					e.stopPropagation();
 					e.preventDefault();
 				}
 			}
 		}, false);
-		
+
 		window.onpopstate = function (e) { self.go(urlPath()); };
 
 		// Attach any event handlers
 		if (params.subscribe) {
 			if (params.subscribe.routeChanged)
 				self.subscribe.routeChanged(params.subscribe.routeChanged);
-			
+
 			if (params.subscribe.urlChanged)
 				self.subscribe.routeChanged(params.subscribe.urlChanged);
 		}
@@ -92,10 +92,10 @@ var KnockoutSinglePage = function () {
 
 		ko.applyBindings(viewModel, params.element);
 	};
-	
+
 	self.go = function (url) {
 		mustBeInitialised();
-		
+
 		if (typeof url == 'string')
 			url = { href: url };
 
@@ -122,31 +122,31 @@ var KnockoutSinglePage = function () {
 		history.pushState(null, null, url.href);
 		eventManager.publish.urlChanged({ url: url.href });
 	};
-	
-	self.formatURL = function (name, params) {
+
+	self.url = function (name, params) {
 		var route = router.get(name);
-		
+
 		if (!route)
 			throw exceptions.routeDoesntExist + name;
-		
+
 		return route.format(params);
 	};
-	
+
 	self.subscribe = {
 		routeChanged: function (callback) {
 			mustBeInitialised();
-			eventManager.subscribe.routeChanged(callback); 
+			eventManager.subscribe.routeChanged(callback);
 		},
 		urlChanged: function (callback) {
 			mustBeInitialised();
 			eventManager.subscribe.urlChanged(callback);
 		}
 	};
-	
+
 	self.unsubscribe = {
 		routeChanged: function (callback) {
 			mustBeInitialised();
-			eventManager.unsubscribe.routeChanged(callback); 
+			eventManager.unsubscribe.routeChanged(callback);
 		},
 		urlChanged: function (callback) {
 			mustBeInitialised();

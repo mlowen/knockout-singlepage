@@ -224,6 +224,33 @@ ko.singlePage.init({
 
 Note that in the scenario where the first argument passed in is an object all other arguments are ignored.
 
+### Bindings
+
+Knockout-SinglePage ships with a binding to populate the `href` attribute of an `a` tag, the binding name is `url` which accepts either a string which is the name of the route or an object which has a `route` property and a `params` object which is used to populate the route parameters. Given the following routes:
+
+```js
+[
+	{ name: 'default', url: '/' },
+	{ name: 'profile', url: '/user/:id/profile' }
+]
+```
+
+When used in the following bindings:
+
+```html
+<a data-bind="route: 'default'">Home</a>
+<a data-bind="url: { route: 'profile', params: { id: 1 }}">Profile</a>
+```
+
+Will result in HTML which looks like:
+
+```html
+<a href="/">Home</a>
+<a href="/user/1/profile">Profile</a>
+```
+
+This functionality is also available via the `ko.singlePage.url(route, params)` method.
+
 ### Loading via AMD
 
 Knockout-SinglePage will expose itself as an [AMD module](http://en.wikipedia.org/wiki/Asynchronous_module_definition) if it is possible. If it is a mixed environment where some things are loaded via AMD and some aren't Knockout-SinglePage will expose itself as an AMD module and load itself into the global scope if Knockout is available in the global scope. When loading Knockout-SinglePage as an AMD module it is important to note that it expects Knockout to be loaded as `knockout`.
