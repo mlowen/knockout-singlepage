@@ -7,8 +7,11 @@ var KnockoutSinglePage = function () {
 	var exceptions = {
 		alreadyInitialised: 'Knockout-SinglePage has already been initialised',
 		notInitialised: 'Knockout-SinglePage has not been initialised',
-		routeDoesntExist: 'No route exists with name: '
+		routeDoesntExist: 'No route exists with name: ',
+		parameterIsNotFunction: 'Parameter is not a function'
 	};
+
+	var hooks = { route: [] };
 
 	/* Private Methods */
 	var isInitialised = function () { return router != null; };
@@ -24,6 +27,8 @@ var KnockoutSinglePage = function () {
 
 		return urlPath(location.href);
 	};
+
+	
 
 	/* Public Methods */
 
@@ -69,7 +74,7 @@ var KnockoutSinglePage = function () {
 					url.route = e.target.dataset.route.toLowerCase();
 
 				if (url.route != 'none') {
-					self.go(url);
+					self.go(url, e.target);
 
 					e.stopPropagation();
 					e.preventDefault();
@@ -93,7 +98,7 @@ var KnockoutSinglePage = function () {
 		ko.applyBindings(viewModel, params.element);
 	};
 
-	self.go = function (url) {
+	self.go = function (url, element) {
 		mustBeInitialised();
 
 		if (typeof url == 'string')
@@ -101,11 +106,29 @@ var KnockoutSinglePage = function () {
 
 		if (!url.route || url.route.toLowerCase() != 'url-only') {
 			var route = router.match(url.href);
-
-			if (route)
-				viewModel.update(route, urlQueryParser(url.href));
-			else
+			
+			if (route) {
+				var queryData = urlQueryParser(url.href);
+				var data = {
+					url: url.href,
+					element: element,
+					name: route.name,
+					component: route.component,
+					context: {
+						parameters: route.parameters,
+						hash: queryData.hash,
+						query: queryData.query
+					}
+				};
+				var update = !hooks.route.reduce(function (current, hook) {
+					return current || hook(data);
+				}, false);
+				
+				if (update)
+					viewModel.update(data.route, data.context);
+			} else {
 				viewModel.update();
+			}
 
 			eventManager.publish.routeChanged({
 				url: url.href,
@@ -153,4 +176,13 @@ var KnockoutSinglePage = function () {
 			eventManager.unsubscribe.urlChanged(callback);
 		}
 	};
+	
+	self.hooks = {
+		route: function (fn) {
+			if ('function' !== typeof fn)
+				throw exceptions.parameterIsNotFunction;
+			
+			hooks.route.push(fn);
+		}
+	}
 };
