@@ -4,7 +4,7 @@
 		<input class="form-control" type="number" data-bind="value: input, valueUpdate: 'afterkeydown'" />
 	</div>
 	<div class="col-md-2">
-		<a href="/second/1" class="btn btn-primary btn-block pull-right" data-bind="attr: { href: '/second/' + input() }, visible: valid">Go to next page</a>
+		<a class="btn btn-primary btn-block pull-right" data-bind="url: { route: 'second', params: { id: input } }, visible: valid">Go to next page</a>
 	</div>
 </div>
 

@@ -83,4 +83,22 @@ var Route = function (data) {
 		
 		return params;
 	};
+	
+	self.format = function (params) {
+		if (parameters.length > 0 && (!params || params.length == 0))
+			return null;
+		
+		var url = self.url;
+		
+		parameters.forEach(function (param) {
+			if (url == null)
+				return;
+			
+			var value = ko.unwrap(params[param]); 
+			
+			url = value ? url.replace(':' + param, value) : null;
+		});
+		
+		return url;
+	};
 };

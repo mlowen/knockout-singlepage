@@ -12,7 +12,7 @@ $(function () {
 							'<input class="form-control" type="number" data-bind="value: input, valueUpdate: \'afterkeydown\'" />' +
 						'</div>' +
 						'<div class="col-md-2">' +
-							'<a href="/second/1" class="btn btn-primary btn-block pull-right" data-bind="attr: { href:\'/second/\' + input() }, visible: valid">Go to next page</a>' +
+							'<a class="btn btn-primary btn-block pull-right" data-bind="href: { route: \'second\', params: { id: input } }, visible: valid">Go to next page</a>' +
 						'</div>' +
 					'</div>' +
 					'<ul>' +
@@ -30,7 +30,7 @@ $(function () {
 				viewModel: SecondViewModel,
 				template: 
 					'Second template, id from url: <strong data-bind="text: id"></strong>' + 
-					'<a href="/" class="btn btn-default pull-right">Back to default</a>'
+					'<a class="btn btn-default pull-right" data-bind="href: \'default\'">Back to default</a>'
 			}
 		}
 	];
