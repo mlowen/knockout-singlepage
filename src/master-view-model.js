@@ -7,17 +7,14 @@ var MasterViewModel = function () {
 	self.hash = ko.observable(null);
 	self.query = ko.observable(null);
 	
-	self.update = function (route, queryData) {
-		if (route) {
-			self.hash(queryData.hash);
-			self.query(queryData.query);
-			self.parameters(route.parameters);
-			self.component(route.component);
-		} else {
+	self.update = function (data) {
+		self.hash(data.context.hash);
+		self.query(data.context.query);
+		self.parameters(data.context.parameters);
+		
+		if (data.component)
+			self.component(data.component);
+		else
 			self.component(self.notFoundComponent);
-			self.parameters(null);
-			self.hash(null);
-			self.query(null);
-		}
 	};
 };

@@ -17,6 +17,14 @@ require(['knockout', '/scripts/routes.js', 'knockout.singlepage'], function(ko, 
 				console.log('Route has changed');
 				console.log(e);
 			}
+		},
+		hooks: {
+			route: function (data) {
+				if (data.element && data.element.classList.contains('ignore')) {
+					console.log('Overriding default behaviour with hook.');
+					return true;
+				} 
+			}
 		}
 	});
 });

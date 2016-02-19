@@ -28,7 +28,10 @@ var KnockoutSinglePage = function () {
 		return urlPath(location.href);
 	};
 
-	
+	var changeUrl = function (url) {
+		history.pushState(null, null, url);
+		eventManager.publish.urlChanged({ url: url });
+	};
 
 	/* Public Methods */
 
@@ -92,6 +95,11 @@ var KnockoutSinglePage = function () {
 			if (params.subscribe.urlChanged)
 				self.subscribe.routeChanged(params.subscribe.urlChanged);
 		}
+		
+		if (params.hooks) {
+			if (params.hooks.route)
+				self.hooks.route(params.hooks.route);
+		}
 
 		self.go(urlPath());
 
@@ -104,46 +112,33 @@ var KnockoutSinglePage = function () {
 		if (typeof url == 'string')
 			url = { href: url };
 
-		if (!url.route || url.route.toLowerCase() != 'url-only') {
+		if (url.route && url.route.toLowerCase() == 'url-only') {
+			changeUrl(url.href);
+		} else {			
 			var route = router.match(url.href);
-			
-			if (route) {
-				var queryData = urlQueryParser(url.href);
-				var data = {
-					url: url.href,
-					element: element,
-					name: route.name,
-					component: route.component,
-					context: {
-						parameters: route.parameters,
-						hash: queryData.hash,
-						query: queryData.query
-					}
-				};
-				var update = !hooks.route.reduce(function (current, hook) {
-					return current || hook(data);
-				}, false);
-				
-				if (update)
-					viewModel.update(data.route, data.context);
-			} else {
-				viewModel.update();
-			}
-
-			eventManager.publish.routeChanged({
+			var queryData = urlQueryParser(url.href);
+			var data = {
 				url: url.href,
 				name: route ? route.name : null,
+				element: element,
 				component: route ? route.component : null,
 				context: {
-					hash: viewModel.hash(),
-					query: viewModel.query(),
-					parameters: viewModel.parameters()
+					hash: queryData.hash,
+					query: queryData.query,
+					parameters: route ? route.parameters : null
 				}
-			});
+			};
+			
+			var performUpdate = !hooks.route.reduce(function (current, hook) {
+				return current || hook(data);
+			}, false);
+			
+			if (performUpdate) {
+				viewModel.update(data);
+				eventManager.publish.routeChanged(data);
+				changeUrl(url.href);
+			}
 		}
-
-		history.pushState(null, null, url.href);
-		eventManager.publish.urlChanged({ url: url.href });
 	};
 
 	self.url = function (name, params) {
@@ -179,10 +174,12 @@ var KnockoutSinglePage = function () {
 	
 	self.hooks = {
 		route: function (fn) {
-			if ('function' !== typeof fn)
-				throw exceptions.parameterIsNotFunction;
-			
-			hooks.route.push(fn);
+			if (Array.isArray(fn))
+				fn.forEach(function (hook) { self.hooks.route(hook); });
+			else if ('function' == typeof fn)
+				hooks.route.push(fn)
+			else
+				throw 'Parameter is not function or array.';
 		}
 	}
 };

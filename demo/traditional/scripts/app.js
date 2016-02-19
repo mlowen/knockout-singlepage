@@ -18,6 +18,7 @@ $(function () {
 					'<ul>' +
 						'<li><a href="/random">Go to non-existant route</a></li>' +
 						'<li><a href="#" data-bind="click: onClick">This should print to the console</a></li>' +
+						'<li><a href="/second/1234" class="ignore">This link is overriden by the route hook</a></li>' +
 						'<li><a href="/new-url" data-route="url-only">Link which only updates the URL</a></li>' +
 						'<li><a href="/ignored-url" data-route="none">Link which is ignored by the framework</a></li>' +
 					'</ul>'
@@ -39,5 +40,11 @@ $(function () {
 	ko.singlePage.subscribe.routeChanged(function(e) {
 		console.log('Route has changed.');
 		console.log(e);
+	});
+	ko.singlePage.hooks.route(function (data) {
+		if (data.element && data.element.classList.contains('ignore')) {
+			console.log('Overriding default behaviour with hook.');
+			return true;
+		}
 	});
 });
