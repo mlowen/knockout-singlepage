@@ -178,6 +178,8 @@ When the route changed event is triggered the Knockout-SinglePage specific infor
 	detail: {
 		name: 'foo',
 		url: '/foo/1#bar?tar=2&baz=3&tar=4',
+		name: 'route-name',
+		element: null,
 		component: 'foo-component',
 		context: {
 			params: { id: 1 },
@@ -206,6 +208,20 @@ The URL changed event is triggered when the URL for the browser is changed but n
 }
 ```
 
+### Hooks
+
+Knockout-SinglePage provides hooks to override some built-in behaviour by providing hooks which are invoked before the action is taken, if the hook returns a truthy value then the default behaviour will not be executed.
+
+Hooks can be instantiated via either a method or field when initialising Knockout-SinglePage with an object.
+
+#### Route
+
+```js
+ko.singlepage.hooks.route(callback)
+```
+
+The route fires before the Knockout-SinglePage updates the URL with the matching route, the information supplied to the hook is the same as the data which is emitted for the route changed event.
+
 ### Initialising with an object
 
 In the scenario where Knockout-SinglePage is initialised and you want to handle the `ko-sp-route-changed` event if you use the `init` method as described above then the code will not miss receiving the event emitted on the initial component load. The `init` method also accepts the passing in of an object as an argument which will allow you to bind events before the initial component is loaded. The equivalent of the previous example with event binding would be as follows:
@@ -217,6 +233,11 @@ ko.singlePage.init({
 	subscribe: {
 		routeChanged: function(e) {
 			console.log(e);
+		}
+	},
+	hooks: {
+		route: function(data) {
+			return data.element && data.element.classList.contains('ignore');
 		}
 	}
 });
