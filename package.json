@@ -1,6 +1,6 @@
 {
   "name": "knockout-singlepage",
-  "version": "0.3.0-alpha",
+  "version": "0.3.0",
   "description": "A single page application extension for KnockoutJS",
   "repository": {
     "type": "git",
