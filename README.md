@@ -42,8 +42,7 @@ The dependencies for using the compiled version of Knockout-SinglePage are:
 
 In addition to the above there are also the following dependencies for developing Knockout-SinglePage:
 
-* [Grunt](http://gruntjs.com/)
-* [Bower](http://bower.io/)
+* [Gulp](http://gulpjs.com/)
 
 ## Usage
 
@@ -53,16 +52,16 @@ To add Knockout-SinglePage to your web application you need to reference using a
 <script type="text/javascript" src="<path to scripts>/knockout-singlepage.js"></script>
 ```
 
-Due to the dependency on Knockout the script tag must be after tag that references Knockout. Once you have referenced the library it is time to define some routes. Routes are an array of objects containing a name and a URL like so:
+Due to the dependency on Knockout the script tag must be after tag that references Knockout. Once you have referenced the library it is time to define some routes. Routes are an array of objects containing a name, a URL and optionally a component like so:
 
 ```js
 var routes = [
-	{ name: 'default', url: '/' },
+	{ name: 'default', url: '/', component: 'dashboardComponent' },
 	{ name: 'anotherRoute', url: '/another-route' }
 ];
 ```
 
-As mentioned above Knockout-SinglePage relies on Knockout components to provide some of the [core functionality](http://knockoutjs.com/documentation/component-overview.html), the name for a route must map to a component that has been registered. Knockout-SinglePage also supports route variables which are defined by prefixing a portion of the URL with a colon `:` an example of which is below:
+As mentioned above Knockout-SinglePage relies on Knockout components to provide some of the [core functionality](http://knockoutjs.com/documentation/component-overview.html), if the component field is not defined then the name of the route must map to a component that has been registered. Knockout-SinglePage also supports route variables which are defined by prefixing a portion of the URL with a colon `:` an example of which is below:
 
 ```js
 { name: 'routeWithVariable', url: '/foo/:id' }
@@ -125,7 +124,7 @@ The values which are accepted for the `data-route` attribute are:
 
 ### Defining component with the route
 
-As previously mentioned the name of a route must match a registered component, if wanted you can use the route definition to also define the component. This is done with the `component` field which acts in the same manner as the object passed in as the second parameter to [`ko.components.register`](http://knockoutjs.com/documentation/component-registration.html), Knockout-SinglePage uses the name of the route as the first argument to that method. The route definitions in turn look like:
+You can define a component when defining a route. This is done by passing an object via the `component` field which acts in the same manner as the object passed in as the second parameter to [`ko.components.register`](http://knockoutjs.com/documentation/component-registration.html), Knockout-SinglePage uses the name of the route as the name of the route. The route definitions in turn look like:
 
 ```js
 var routes = [
@@ -163,19 +162,24 @@ And add these to an object that is passed to the view model of the component usi
 
 ### Events
 
-Knockout-SinglePage emits the event `ko-sp-route-changed` event when the URL changes and a new component is loaded. It is important to note that if the `go` method is called with the 'url-only' option or the `data-route` attribute is used with the 'none' or 'url-only' options then the event will not be triggered. The event is dispatched from the element that Knockout-SinglePage has been bound to, an event handler can either be bound to that element or use the helper methods provided by Knockout-SinglePage.
+Knockout-SinglePage emits a set of events during the lifetime of the application. Events can be subscribed to either through a method or via the object which can be passed into the `init` method. In both cases either a method or an array of methods can be passed in to be bound to the event.
 
-* `on(event, callback)` Will bind the callback to event.
-* `onRouteChanged(callback)` This is the equivalent of calling the `on` method with `'ko-sp-route-changed'` in as the event.
-* `off(event, callback)` Will remove the binding to the event.
-* `offRouteChanged(callback)` This is the equivalent of calling the `off` method with `'ko-sp-route-changed'` in as the event.
+#### Route Changed
 
-When the `ko-sp-route-changed` event is triggered the Knockout-SinglePage specific information can be found in the detail property of the event. The data supplied is the URL, the component being displayed and the route context. The structure of the data will look like the following:
+* **Subscribe:** `ko.singlepage.subscribe.routeChanged(callback)`
+* **Unsubscribe:** `ko.singlepage.unsubscribe.routeChanged(callback)`
+
+The route changed event is fired when when the URL changes and a new component is loaded. It is important to note that if the `go` method is called with the 'url-only' option or the `data-route` attribute is used with the 'none' or 'url-only' options then the event will not be triggered.
+
+When the route changed event is triggered the Knockout-SinglePage specific information can be found in the detail property of the event. The data supplied is the URL, the component being displayed and the route context. The structure of the data will look like the following:
 
 ```js
 {
 	detail: {
+		name: 'foo',
 		url: '/foo/1#bar?tar=2&baz=3&tar=4',
+		name: 'route-name',
+		element: null,
 		component: 'foo-component',
 		context: {
 			params: { id: 1 },
@@ -189,9 +193,34 @@ When the `ko-sp-route-changed` event is triggered the Knockout-SinglePage specif
 }
 ```
 
-### Accessing the underlying element
+#### URL Changed
 
-Once Knockout-SinglePage has been initialised the element that it has been bound is accessible via the `element` property.
+* **Subscribe:** `ko.singlepage.subscribe.urlChanged(callback)`
+* **Unsubscribe:** `ko.singlepage.unsubscribe.urlChanged(callback)`
+
+The URL changed event is triggered when the URL for the browser is changed but navigation does not move away from the application. The data which is supplied when the event is triggered is as follows:
+
+```js
+{
+	detail: {
+		url: '/foo/1#bar?tar=2&baz=3&tar=4'
+	}
+}
+```
+
+### Hooks
+
+Knockout-SinglePage provides hooks to override some built-in behaviour by providing hooks which are invoked before the action is taken, if the hook returns a truthy value then the default behaviour will not be executed.
+
+Hooks can be instantiated via either a method or field when initialising Knockout-SinglePage with an object.
+
+#### Route
+
+```js
+ko.singlepage.hooks.route(callback)
+```
+
+The route fires before the Knockout-SinglePage updates the URL with the matching route, the information supplied to the hook is the same as the data which is emitted for the route changed event.
 
 ### Initialising with an object
 
@@ -201,15 +230,47 @@ In the scenario where Knockout-SinglePage is initialised and you want to handle 
 ko.singlePage.init({
 	routes: routes,
 	element: document.getElementById('app'),
-	on: {
+	subscribe: {
 		routeChanged: function(e) {
 			console.log(e);
+		}
+	},
+	hooks: {
+		route: function(data) {
+			return data.element && data.element.classList.contains('ignore');
 		}
 	}
 });
 ```
 
 Note that in the scenario where the first argument passed in is an object all other arguments are ignored.
+
+### Bindings
+
+Knockout-SinglePage ships with a binding to populate the `href` attribute of an `a` tag, the binding name is `url` which accepts either a string which is the name of the route or an object which has a `route` property and a `params` object which is used to populate the route parameters. Given the following routes:
+
+```js
+[
+	{ name: 'default', url: '/' },
+	{ name: 'profile', url: '/user/:id/profile' }
+]
+```
+
+When used in the following bindings:
+
+```html
+<a data-bind="route: 'default'">Home</a>
+<a data-bind="url: { route: 'profile', params: { id: 1 }}">Profile</a>
+```
+
+Will result in HTML which looks like:
+
+```html
+<a href="/">Home</a>
+<a href="/user/1/profile">Profile</a>
+```
+
+This functionality is also available via the `ko.singlePage.url(route, params)` method.
 
 ### Loading via AMD
 
@@ -227,36 +288,30 @@ Any known issues can be found on the [GitHub issues page with the `bug` tag](htt
 
 If you are wanting to contribute to Knockout-SinglePage the first thing you will want to do is [clone the source code](https://github.com/mlowen/knockout-singlepage), once you have done that you can install the
 
-If you are just starting to work with the Knockout-SinglePage source code the first thing you will want to do is make sure you have the development dependencies installed and then install all of the plugins that Grunt requires by running the following command:
+If you are just starting to work with the Knockout-SinglePage source code the first thing you will want to do is make sure you have the development dependencies installed and then install all of the plugins that Gulp requires by running the following command:
 
 ```
 npm install
 ```
 
-You will then want to install the library dependencies which is done with bower and the following command:
-
-```
-bower install
-```
-
 Now that the dependencies have been installed you can compile the coffeescript into javascript by running the following command:
 
 ```
-grunt
+gulp
 ```
 
-During development it is handy to have Grunt rebuilding the javascript whenever a change is made, this can be done by running the following command:
+During development it is handy to have Gulp rebuilding the javascript whenever a change is made, this can be done by running the following command:
 
 ```
-grunt watch
+gulp watch
 ```
 
 ### Running tests
 
-Knockout-SinglePage uses [Jasmine](http://jasmine.github.io/) for any of its tests, these are run when you run `grunt` and are automatically invoked when a source file is changed while `grunt watch` is running. However if you only want to run the tests and not create the final javascript files this can be done with the following command:
+Knockout-SinglePage uses [Jasmine](http://jasmine.github.io/) for any of its tests, these are run when you run `gulp` and are automatically invoked when a source file is changed while `gulp watch` is running. However if you only want to run the tests and not create the final javascript files this can be done with the following command:
 
 ```
-grunt test
+gulp test
 ```
 
 ### Running the demos

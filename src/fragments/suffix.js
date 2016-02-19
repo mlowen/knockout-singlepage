@@ -1,3 +1,7 @@
+    if (!ko.singlePage)
+      ko.singlePage = new KnockoutSinglePage();
+  };
+  
   var amdAvailable = typeof define === 'function' && define.amd;
 
   if(amdAvailable) define([ 'knockout' ], initialise);

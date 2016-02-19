@@ -3,7 +3,8 @@ bower_components
 build
 .grunt
 
-tests/**/*.js
-demo/**/*.js
+tests/load-routes-tests.js
+tests/match-routes-tests.js
+demo/**/knockout-singlepage.js
 _SpecRunner.html
 knockout-singlepage-*.zip
