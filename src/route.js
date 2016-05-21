@@ -17,7 +17,7 @@ var Route = function (data) {
 	var url2Regex = function (url) {
 		return new RegExp((
 			'^' + url.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&') + '\\/?(#.*)?(\\?.*)?$'
-		).replace(regex.parameters, '([a-z0-9]+)'), 'i');
+		).replace(regex.parameters, '([a-z0-9_-]+)'), 'i');
 	};
 	
 	/* Constructor */

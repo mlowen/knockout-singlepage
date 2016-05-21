@@ -263,6 +263,28 @@ describe('Route', function () {
 		expect(parameters.id).toBe('bar');
 	});
 	
+	it('returns a property where the route parameter contains a - character.', function () {
+		var route = new Route({
+			name: 'test-route',
+			url: '/foo/:id'
+		});
+		
+		var parameters = route.parameters('/foo/bar-tar');
+		
+		expect(parameters.id).toBe('bar-tar');
+	});
+	
+	it('returns a property where the route parameter contains a _ character.', function () {
+		var route = new Route({
+			name: 'test-route',
+			url: '/foo/:id'
+		});
+		
+		var parameters = route.parameters('/foo/bar_tar');
+		
+		expect(parameters.id).toBe('bar_tar');
+	});
+	
 	it('returns an object populated with a multiple field when the route has multiple parameters.', function () {
 		var route = new Route({
 			name: 'test-route',
