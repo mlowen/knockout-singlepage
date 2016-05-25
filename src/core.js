@@ -95,7 +95,7 @@ var KnockoutSinglePage = function () {
 			if (params.subscribe.urlChanged)
 				self.subscribe.routeChanged(params.subscribe.urlChanged);
 		}
-		
+
 		if (params.hooks) {
 			if (params.hooks.route)
 				self.hooks.route(params.hooks.route);
@@ -114,7 +114,7 @@ var KnockoutSinglePage = function () {
 
 		if (url.route && url.route.toLowerCase() == 'url-only') {
 			changeUrl(url.href);
-		} else {			
+		} else {
 			var route = router.match(url.href);
 			var queryData = urlQueryParser(url.href);
 			var data = {
@@ -128,11 +128,11 @@ var KnockoutSinglePage = function () {
 					parameters: route ? route.parameters : null
 				}
 			};
-			
+
 			var performUpdate = !hooks.route.reduce(function (current, hook) {
 				return current || hook(data);
 			}, false);
-			
+
 			if (performUpdate) {
 				viewModel.update(data);
 				eventManager.publish.routeChanged(data);
@@ -142,6 +142,8 @@ var KnockoutSinglePage = function () {
 	};
 
 	self.url = function (name, params) {
+		mustBeInitialised();
+
 		var route = router.get(name);
 
 		if (!route)
@@ -171,7 +173,7 @@ var KnockoutSinglePage = function () {
 			eventManager.unsubscribe.urlChanged(callback);
 		}
 	};
-	
+
 	self.hooks = {
 		route: function (fn) {
 			if (Array.isArray(fn))
