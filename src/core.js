@@ -14,10 +14,10 @@ var KnockoutSinglePage = function () {
 	var hooks = { route: [] };
 
 	/* Private Methods */
-	var isInitialised = function () { return router != null; };
+	self.initialised = function () { return router != null; };
 
 	var mustBeInitialised = function () {
-		if (!isInitialised())
+		if (!self.initialised())
 			throw exceptions.notInitialised;
 	};
 
@@ -36,7 +36,7 @@ var KnockoutSinglePage = function () {
 	/* Public Methods */
 
 	self.init = function (routes, el) {
-		if (isInitialised())
+		if (self.initialised())
 			throw exceptions.alreadyInitialised;
 
 		var params = routes;
