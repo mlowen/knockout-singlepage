@@ -122,6 +122,15 @@ The values which are accepted for the `data-route` attribute are:
 * `url-only` - Behaves the same as the `go` method only updating the browser URL.
 * `none` - When this is supplied Knockout-SinglePage will ignore the link when it is clicked and leave the browser to handle it.
 
+To generate a URL from the a route and a collection of parameters the `url` method can be used in the following manner:
+
+```js
+ko.singlePage.go('default');
+ko.singlePage.go('default', { id: 1 });
+```
+
+This method will throw an exception if Knockout-SinglePage has not been initialised before the method is invoked. The `initialised` method can be used to check if the `init` method has been invoked.
+
 ### Defining component with the route
 
 You can define a component when defining a route. This is done by passing an object via the `component` field which acts in the same manner as the object passed in as the second parameter to [`ko.components.register`](http://knockoutjs.com/documentation/component-registration.html), Knockout-SinglePage uses the name of the route as the name of the route. The route definitions in turn look like:
