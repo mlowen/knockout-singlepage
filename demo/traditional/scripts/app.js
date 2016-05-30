@@ -5,7 +5,7 @@ $(function () {
 			url: '/',
 			component: {
 				viewModel: DefaultViewModel,
-				template: 
+				template:
 					'<p>This is the default template, choose the positive number to be added to the route for the next page</p>' +
 					'<div class="row">' +
 						'<div class="col-md-10">' +
@@ -21,21 +21,22 @@ $(function () {
 						'<li><a href="/second/1234" class="ignore">This link is overriden by the route hook</a></li>' +
 						'<li><a href="/new-url" data-route="url-only">Link which only updates the URL</a></li>' +
 						'<li><a href="/ignored-url" data-route="none">Link which is ignored by the framework</a></li>' +
+						'<li><a href="/second/1234"><span>This link has a non-text child</span></a></li>' +
 					'</ul>'
 			}
-		}, 
+		},
 		{
 			name: 'second',
 			url: '/second/:id',
 			component: {
 				viewModel: SecondViewModel,
-				template: 
-					'Second template, id from url: <strong data-bind="text: id"></strong>' + 
+				template:
+					'Second template, id from url: <strong data-bind="text: id"></strong>' +
 					'<a class="btn btn-default pull-right" data-bind="href: \'default\'">Back to default</a>'
 			}
 		}
 	];
-	
+
 	ko.singlePage.init(routes, document.getElementById('app'));
 	ko.singlePage.subscribe.routeChanged(function(e) {
 		console.log('Route has changed.');
