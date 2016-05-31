@@ -29,8 +29,33 @@ var KnockoutSinglePage = function () {
 	};
 
 	var changeUrl = function (url) {
+		console.log('Url changed')
+
 		history.pushState(null, null, url);
 		eventManager.publish.urlChanged({ url: url });
+	};
+
+	var getATag = function (e) {
+		var element = null;
+
+		if(e.path) {
+			element = e.path.reduce(function (previous, current) {
+				if (!previous && current.tagName && current.tagName.toLowerCase() == 'a')
+					return current;
+
+				return previous;
+			}, null);
+		} else {
+			var current = e.target;
+
+			while (current && current.tagName && current.tagName.toLowerCase() != 'a') {
+				current = current.parentNode;
+			}
+
+			element = current;
+		}
+
+		return element;
 	};
 
 	/* Public Methods */
@@ -53,7 +78,9 @@ var KnockoutSinglePage = function () {
 		router = new Router(params.routes);
 
 		document.body.addEventListener('click', function (e) {
-			if (e.target.tagName.toLowerCase() != 'a')
+			var element = getATag(e);
+
+			if (!element)
 				return;
 
 			// This feels hacky but it works, as best as I can tell there
@@ -61,23 +88,23 @@ var KnockoutSinglePage = function () {
 			// particular knockout binding on an element.
 			var hasClickBinding = false;
 
-			if (e.target.dataset.bind) {
-				hasClickBinding = e.target.dataset.bind.split(',').reduce(function (initial, current) {
+			if (element.dataset.bind) {
+				hasClickBinding = element.dataset.bind.split(',').reduce(function (initial, current) {
 					return initial || current.split(':')[0].trim().toLowerCase() == 'click';
 				}, false);
 			}
 
 			var isLeftButton = (e.which || e.button) == 1;
-			var isBaseUrl = e.target.href.slice(0, baseUrl.length) == baseUrl;
+			var isBaseUrl = element.href.slice(0, baseUrl.length) == baseUrl;
 
 			if (isLeftButton && isBaseUrl && !hasClickBinding) {
-				var url = { href: urlPath(e.target.href) };
+				var url = { href: urlPath(element.href) };
 
-				if (e.target.dataset.route)
-					url.route = e.target.dataset.route.toLowerCase();
+				if (element.dataset.route)
+					url.route = element.dataset.route.toLowerCase();
 
 				if (url.route != 'none') {
-					self.go(url, e.target);
+					self.go(url, element);
 
 					e.stopPropagation();
 					e.preventDefault();
