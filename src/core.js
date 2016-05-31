@@ -52,7 +52,8 @@ var KnockoutSinglePage = function () {
 				current = current.parentNode;
 			}
 
-			element = current;
+			if (current.tagName)
+				element = current;
 		}
 
 		return element;
@@ -82,6 +83,8 @@ var KnockoutSinglePage = function () {
 
 			if (!element)
 				return;
+
+			console.log(element);
 
 			// This feels hacky but it works, as best as I can tell there
 			// is no way to programmatically determine if there is a
